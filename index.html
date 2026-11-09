@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campeonato Assetto Corsa - Leaderboard</title>
+  <style>
+    :root {
+      --bg-color: #0f1115;
+      --card-bg: #1a1d24;
+      --accent-color: #ff3e3e;
+      --text-main: #f0f2f5;
+      --text-muted: #8c93a0;
+      --border-color: #2a2e39;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px 0;
+      border-bottom: 2px solid var(--accent-color);
+    }
+    header h1 { font-size: 2.2rem; text-transform: uppercase; letter-spacing: 1px; }
+    header p { color: var(--text-muted); font-size: 1rem; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    @media (min-width: 850px) {
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid var(--border-color);
+    }
+    .card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: var(--accent-color);
+      text-transform: uppercase;
+    }
+
+    /* Tabela de Classificação */
+    .table-wrapper { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.95rem;
+    }
+    th {
+      background-color: rgba(255, 62, 62, 0.1);
+      color: var(--accent-color);
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+    tr:nth-child(1) td:first-child { color: #ffd700; font-weight: bold; } /* 1º Lugar */
+    tr:nth-child(2) td:first-child { color: #c0c0c0; font-weight: bold; } /* 2º Lugar */
+    tr:nth-child(3) td:first-child { color: #cd7f32; font-weight: bold; } /* 3º Lugar */
+    .time-cell { font-family: monospace; font-size: 1rem; font-weight: bold; color: #40c463; }
+
+    /* Estilo do Formulário */
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Assetto Corsa Championship</h1>
+      <p>Classificação Geral e Inscrições de Pilotos</p>
+    </header>
+
+    <div class="grid">
+      <!-- Seção da Classificação -->
+      <section class="card">
+        <h2>Leaderboard (Tempos)</h2>
+        <div class="table-wrapper">
+          <table id="leaderboard">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Piloto</th>
+                <th>Carro</th>
+                <th>Tempo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="4" style="text-align:center;">Carregando tempos...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Seção do Formulário de Inscrição -->
+      <section class="card">
+        <h2>Inscrição de Piloto</h2>
+        <!-- SUBS TIKUIA O LINK ABAIXO PELO EMBED DO SEU GOOGLE FORMS -->
+        <iframe src="https://docs.google.com/forms/d/e/SEU_ID_DO_FORMULARIO/viewform?embedded=true">Carregando…</iframe>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // 1. INSIRA AQUI O LINK DO CSV DA SUA PLANILHA PUBLICADA
+    const SHEET_CSV_URL = 'SUA_URL_DO_CSV_PUBLICADO_AQUI';
+
+    async function fetchLeaderboard() {
+      try {
+        const response = await fetch(SHEET_CSV_URL);
+        const data = await response.text();
+        
+        // Converte o CSV em matriz Javascript
+        const rows = data.split('\n').map(row => row.split(','));
+        const tbody = document.querySelector('#leaderboard tbody');
+        tbody.innerHTML = '';
+
+        // Presume que a Linha 0 seja o cabeçalho: [Piloto, Carro, Tempo]
+        const pilots = [];
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          if (row.length >= 3 && row[0].trim() !== '') {
+            pilots.push({
+              name: row[0].replace(/"/g, '').trim(),
+              car: row[1].replace(/"/g, '').trim(),
+              time: row[2].replace(/"/g, '').trim()
+            });
+          }
+        }
+
+        // Exibe os pilotos formatados na tabela
+        pilots.forEach((pilot, index) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>P${index + 1}</td>
+            <td>${pilot.name}</td>
+            <td>${pilot.car}</td>
+            <td class="time-cell">${pilot.time}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        if (pilots.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nenhum tempo registrado ainda.</td></tr>';
+        }
+
+      } catch (error) {
+        console.error('Erro ao buscar classificação:', error);
+        document.querySelector('#leaderboard tbody').innerHTML = 
+          '<tr><td colspan="4" style="text-align:center; color:#ff3e3e;">Erro ao carregar a tabela. Verifique o link do CSV.</td></tr>';
+      }
+    }
+
+    // Carrega a tabela ao abrir a página
+    fetchLeaderboard();
+  </script>
+</body>
+</html>
