@@ -11,7 +11,7 @@
 /* ============================================================
    CONFIGURAÇÃO — edite só estas duas linhas (no <script> abaixo)
    1) CSV_URL  → link "Publicar na Web" da aba RANKING (formato CSV)
-   2) FORM_URL → link do Google Forms (o mesmo do iframe "Incorporar")
+   2) ENTRY    → códigos das perguntas do Google Forms
    ============================================================ */
 :root{
   --bg:#0b0c0f; --bg2:#121419; --card:#171a21; --line:#262a33;
@@ -196,9 +196,9 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
           <div class="fld"><label for="f-wpp">WhatsApp <em>*</em></label>
             <input id="f-wpp" name="wpp" type="tel" inputmode="numeric" placeholder="(13) 99999-9999" maxlength="15">
             <span class="err">Informe um WhatsApp com DDD.</span></div>
-          <div class="fld full"><label for="f-email">E-mail</label>
-            <input id="f-email" name="email" type="email" autocomplete="email" placeholder="opcional">
-            <span class="err">E-mail inválido.</span></div>
+          <div class="fld full"><label for="f-email">E-mail <em>*</em></label>
+            <input id="f-email" name="email" type="email" autocomplete="email" placeholder="seu@email.com">
+            <span class="err">Informe um e-mail válido.</span></div>
           <fieldset class="fld"><legend>Já competiu? <em>*</em></legend>
             <div class="opts">
               <label><input type="radio" name="competiu" value="Sim"><span>Sim</span></label>
@@ -236,12 +236,12 @@ const FORM_ID = "1FAIpQLScnLPWYWUG7wDEnts95c_mP25ph6qqAOJX1HUeaLNgwtZw4Ew";
 // Código de cada pergunta (entry.XXXXXXX) — veja como pegar no passo a passo.
 // O texto enviado nas perguntas Sim/Não precisa ser IGUAL ao das opções do Forms.
 const ENTRY = {
-  cpf:      "entry.0000000001",
-  nome:     "entry.0000000002",
-  wpp:      "entry.0000000003",
-  competiu: "entry.0000000004",
-  outros:   "entry.0000000005",
-  email:    "emailAddress"      // se o Forms "coleta e-mails"; se o e-mail for uma pergunta normal, troque por entry.XXXX
+  cpf:      "entry.362328070",
+  nome:     "entry.530832851",
+  wpp:      "entry.411931172",
+  competiu: "entry.1642324945",
+  outros:   "entry.692842771",
+  email:    "emailAddress"      // e-mail coletado pelas configurações do Forms
 };
 // Atualizar a tabela a cada X segundos
 const REFRESH_SECONDS = 60;
@@ -394,12 +394,17 @@ $("#cad").addEventListener("submit", async e=>{
     "f-nome": v.nome.split(" ").length>=2,
     "f-cpf": cpfOk(v.cpf),
     "f-wpp": v.wpp.length>=10,
-    "f-email": !v.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)
+    "f-email": /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)
   };
   let ok=true;
   for(const [id,pass] of Object.entries(checks)){ $("#"+id).closest(".fld").classList.toggle("bad",!pass); ok=ok&&pass; }
   for(const n of ["competiu","outros"]){ const fs=f.querySelector(`[name=${n}]`).closest(".fld"); fs.classList.toggle("bad",!v[n]); ok=ok&&!!v[n]; }
   if(!ok){ f.querySelector(".bad input")?.focus(); return; }
+
+  if(Object.values(ENTRY).some(x=>/^entry\.0+\d$/.test(x))){
+    alert("Formulário ainda não configurado: os códigos das perguntas (ENTRY) no index.html precisam ser preenchidos. Nada foi enviado.");
+    return;
+  }
 
   const body=new URLSearchParams();
   for(const k of Object.keys(ENTRY)) if(v[k]) body.append(ENTRY[k], v[k]);
