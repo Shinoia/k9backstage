@@ -100,10 +100,37 @@ th.r{text-align:right}
 mark{background:rgba(225,6,0,.35);color:#fff;border-radius:2px;padding:0 2px}
 
 /* formulário */
-.form-box{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden}
-.form-box iframe{width:100%;height:1150px;border:0;display:block;background:#fff}
-.form-off{padding:28px;color:var(--muted);font-size:14px}
-.form-off code{font-family:"JetBrains Mono";color:var(--txt);background:var(--bg2);padding:2px 6px;border-radius:3px}
+.form-box{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:28px;max-width:720px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.fld{display:flex;flex-direction:column;gap:7px}
+.fld.full{grid-column:1/-1}
+.fld label,.fld legend{font:700 13px/1 "Barlow Condensed";letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.fld label em,.fld legend em{color:var(--red2);font-style:normal}
+.fld input[type=text],.fld input[type=email],.fld input[type=tel]{background:var(--bg2);border:1px solid var(--line);
+  color:var(--txt);padding:13px 14px;border-radius:4px;font:500 15px Inter;outline:none;transition:.15s}
+.fld input:focus{border-color:var(--red)}
+.fld.bad input{border-color:var(--red2)}
+.fld .err{font-size:12px;color:var(--red2);min-height:0;display:none}
+.fld.bad .err{display:block}
+fieldset.fld{border:0}
+.opts{display:flex;gap:10px}
+.opts label{flex:1;cursor:pointer;font:600 15px Inter;letter-spacing:0;text-transform:none;color:var(--txt)}
+.opts input{position:absolute;opacity:0}
+.opts span{display:block;text-align:center;padding:12px;border:1px solid var(--line);background:var(--bg2);border-radius:4px;transition:.15s}
+.opts input:checked+span{border-color:var(--red);background:rgba(225,6,0,.15)}
+.opts input:focus-visible+span{outline:2px solid var(--red2)}
+.btn{margin-top:24px;width:100%;background:var(--red);color:#fff;border:0;padding:16px;border-radius:4px;cursor:pointer;
+  font:800 18px/1 "Barlow Condensed";letter-spacing:.14em;text-transform:uppercase;transition:.2s}
+.btn:hover{background:var(--red2)}
+.btn:disabled{opacity:.5;cursor:wait}
+.note{font-size:12px;color:var(--muted);margin-top:14px}
+.done{text-align:center;padding:30px 10px}
+.done h3{font:800 36px/1 "Barlow Condensed";text-transform:uppercase;margin:12px 0 8px}
+.done p{color:var(--muted)}
+.done .flag{width:64px;height:64px;margin:0 auto;border-radius:50%;background:
+  conic-gradient(#fff 25%,#000 0 50%,#fff 0 75%,#000 0) 0 0/16px 16px;border:3px solid var(--green)}
+.done button{margin-top:18px;background:none;border:1px solid var(--line);color:var(--txt);padding:10px 16px;border-radius:4px;cursor:pointer}
+@media (max-width:720px){.grid{grid-template-columns:1fr}.form-box{padding:20px}}
 
 footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:13px}
 
@@ -157,7 +184,42 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
 
   <section id="inscricao">
     <div class="sec-h"><h2>Inscrição<small>Preencha o formulário para entrar no campeonato.</small></h2></div>
-    <div id="form" class="form-box"></div>
+    <div class="form-box">
+      <form id="cad" novalidate>
+        <div class="grid">
+          <div class="fld full"><label for="f-nome">Nome completo <em>*</em></label>
+            <input id="f-nome" name="nome" type="text" autocomplete="name" maxlength="80">
+            <span class="err">Informe seu nome completo.</span></div>
+          <div class="fld"><label for="f-cpf">CPF <em>*</em></label>
+            <input id="f-cpf" name="cpf" type="text" inputmode="numeric" placeholder="000.000.000-00" maxlength="14">
+            <span class="err">CPF inválido.</span></div>
+          <div class="fld"><label for="f-wpp">WhatsApp <em>*</em></label>
+            <input id="f-wpp" name="wpp" type="tel" inputmode="numeric" placeholder="(13) 99999-9999" maxlength="15">
+            <span class="err">Informe um WhatsApp com DDD.</span></div>
+          <div class="fld full"><label for="f-email">E-mail</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" placeholder="opcional">
+            <span class="err">E-mail inválido.</span></div>
+          <fieldset class="fld"><legend>Já competiu? <em>*</em></legend>
+            <div class="opts">
+              <label><input type="radio" name="competiu" value="Sim"><span>Sim</span></label>
+              <label><input type="radio" name="competiu" value="Não"><span>Não</span></label>
+            </div><span class="err">Escolha uma opção.</span></fieldset>
+          <fieldset class="fld"><legend>Quer participar de outros campeonatos? <em>*</em></legend>
+            <div class="opts">
+              <label><input type="radio" name="outros" value="Sim"><span>Sim</span></label>
+              <label><input type="radio" name="outros" value="Não"><span>Não</span></label>
+            </div><span class="err">Escolha uma opção.</span></fieldset>
+        </div>
+        <button class="btn" type="submit">Confirmar inscrição</button>
+        <p class="note">Seus dados (CPF, WhatsApp e e-mail) são usados só pela organização e não aparecem no ranking.</p>
+      </form>
+      <div id="done" class="done" hidden>
+        <div class="flag"></div>
+        <h3>Inscrição enviada!</h3>
+        <p>Agora é acelerar. Seu tempo aparece na classificação assim que for registrado.</p>
+        <button type="button" id="again">Fazer outra inscrição</button>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -169,8 +231,18 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
 // Link CSV da aba RANKING: Arquivo → Compartilhar → Publicar na Web
 // → escolha "RANKING" e "Valores separados por vírgula (.csv)" → Publicar → copie o link.
 const CSV_URL  = "";
-// Link do Google Forms (o "src" do código de incorporar, termina em ?embedded=true)
-const FORM_URL = "";
+// Formulário: ID do Google Forms (a parte entre /e/ e /viewform no link)
+const FORM_ID = "1FAIpQLScnLPWYWUG7wDEnts95c_mP25ph6qqAOJX1HUeaLNgwtZw4Ew";
+// Código de cada pergunta (entry.XXXXXXX) — veja como pegar no passo a passo.
+// O texto enviado nas perguntas Sim/Não precisa ser IGUAL ao das opções do Forms.
+const ENTRY = {
+  cpf:      "entry.0000000001",
+  nome:     "entry.0000000002",
+  wpp:      "entry.0000000003",
+  competiu: "entry.0000000004",
+  outros:   "entry.0000000005",
+  email:    "emailAddress"      // se o Forms "coleta e-mails"; se o e-mail for uma pergunta normal, troque por entry.XXXX
+};
 // Atualizar a tabela a cada X segundos
 const REFRESH_SECONDS = 60;
 /* ================================================================ */
@@ -285,10 +357,64 @@ async function load(){
   }
 }
 
-// formulário
-$("#form").innerHTML = FORM_URL
-  ? `<iframe src="${esc(FORM_URL)}" loading="lazy" title="Formulário de inscrição">Carregando…</iframe>`
-  : `<div class="form-off">Formulário ainda não configurado. Cole o link do Google Forms em <code>FORM_URL</code> no arquivo <code>index.html</code>.</div>`;
+/* ---------------- formulário de inscrição ---------------- */
+const digits = s => s.replace(/\D/g,"");
+function cpfOk(c){
+  c=digits(c); if(c.length!==11 || /^(\d)\1+$/.test(c)) return false;
+  for(let t=9;t<11;t++){
+    let s=0; for(let i=0;i<t;i++) s+=+c[i]*(t+1-i);
+    if(((s*10)%11)%10 !== +c[t]) return false;
+  }
+  return true;
+}
+// máscaras
+$("#f-cpf").addEventListener("input",e=>{
+  const d=digits(e.target.value).slice(0,11);
+  e.target.value=d.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");
+});
+$("#f-wpp").addEventListener("input",e=>{
+  const d=digits(e.target.value).slice(0,11);
+  e.target.value=d.length>10?d.replace(/(\d{2})(\d{5})(\d{0,4})/,"($1) $2-$3")
+    :d.length>2?d.replace(/(\d{2})(\d{0,4})(\d{0,4})/,(m,a,b,c)=>`(${a}) ${b}${c?"-"+c:""}`):d;
+});
+
+$("#cad").addEventListener("input",e=>e.target.closest(".fld")?.classList.remove("bad"));
+
+$("#cad").addEventListener("submit", async e=>{
+  e.preventDefault();
+  const f=e.target, v={
+    nome: f.nome.value.trim().replace(/\s+/g," "),
+    cpf: digits(f.cpf.value),
+    wpp: digits(f.wpp.value),
+    email: f.email.value.trim(),
+    competiu: f.competiu.value,
+    outros: f.outros.value
+  };
+  const checks={
+    "f-nome": v.nome.split(" ").length>=2,
+    "f-cpf": cpfOk(v.cpf),
+    "f-wpp": v.wpp.length>=10,
+    "f-email": !v.email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)
+  };
+  let ok=true;
+  for(const [id,pass] of Object.entries(checks)){ $("#"+id).closest(".fld").classList.toggle("bad",!pass); ok=ok&&pass; }
+  for(const n of ["competiu","outros"]){ const fs=f.querySelector(`[name=${n}]`).closest(".fld"); fs.classList.toggle("bad",!v[n]); ok=ok&&!!v[n]; }
+  if(!ok){ f.querySelector(".bad input")?.focus(); return; }
+
+  const body=new URLSearchParams();
+  for(const k of Object.keys(ENTRY)) if(v[k]) body.append(ENTRY[k], v[k]);
+
+  const btn=f.querySelector(".btn"); btn.disabled=true; btn.textContent="Enviando…";
+  try{
+    // O Google não devolve resposta legível para outros sites (no-cors),
+    // então o envio é considerado ok se não houver erro de rede.
+    await fetch(`https://docs.google.com/forms/d/e/${FORM_ID}/formResponse`,{method:"POST",mode:"no-cors",body});
+    f.hidden=true; $("#done").hidden=false; f.reset();
+  }catch(err){
+    alert("Não foi possível enviar. Verifique sua conexão e tente de novo.");
+  }finally{ btn.disabled=false; btn.textContent="Confirmar inscrição"; }
+});
+$("#again").addEventListener("click",()=>{ $("#done").hidden=true; $("#cad").hidden=false; });
 
 $("#q").addEventListener("input", render);
 load();
