@@ -96,6 +96,8 @@ td.c{font:500 13px "JetBrains Mono";color:var(--muted);width:90px}
 td.t{font:700 15px "JetBrains Mono";text-align:right;white-space:nowrap}
 td.g{font:500 13px "JetBrains Mono";color:var(--muted);text-align:right;width:120px;white-space:nowrap}
 th.r{text-align:right}
+.more{margin-top:14px;text-align:center;font-size:13px;color:var(--muted)}
+.more:empty{display:none}
 .empty{padding:40px;text-align:center;color:var(--muted)}
 mark{background:rgba(225,6,0,.35);color:#fff;border-radius:2px;padding:0 2px}
 
@@ -180,6 +182,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
         <tbody id="rows"><tr><td colspan="5" class="empty">Carregando…</td></tr></tbody>
       </table>
     </div>
+    <p id="more" class="more"></p>
   </section>
 
   <section id="inscricao">
@@ -243,6 +246,8 @@ const ENTRY = {
   outros:   "entry.692842771",
   email:    "emailAddress"      // e-mail coletado pelas configurações do Forms
 };
+// Quantos pilotos aparecem na tabela (os outros só pela busca)
+const TOP_N = 10;
 // Atualizar a tabela a cada X segundos
 const REFRESH_SECONDS = 60;
 /* ================================================================ */
@@ -326,7 +331,7 @@ function render(){
       <div class="gp">${i?"+"+(d.gap/1000).toFixed(3)+"s":"melhor volta"}</div><div class="base"></div></div>`;
   }).join("");
 
-  const list = q ? data.filter(d => d.nome.toLowerCase().includes(q) || d.cod.includes(q)) : data;
+  const list = q ? data.filter(d => d.nome.toLowerCase().includes(q) || d.cod.includes(q)) : data.slice(0, TOP_N);
   $("#rows").innerHTML = list.length ? list.map(d=>`
     <tr class="${d.pos<=3?"t"+d.pos:""}">
       <td class="p">${d.pos}</td>
@@ -335,6 +340,10 @@ function render(){
       <td class="t">${fmt(d.ms)}</td>
       <td class="g">${d.pos===1?"—":"+"+(d.gap/1000).toFixed(3)}</td>
     </tr>`).join("") : `<tr><td colspan="5" class="empty">Nenhum piloto encontrado.</td></tr>`;
+
+  $("#more").textContent = !q && data.length > TOP_N
+    ? `Mostrando os ${TOP_N} primeiros de ${data.length} pilotos. Use a busca para encontrar seu nome.`
+    : q ? `${list.length} resultado${list.length===1?"":"s"} para "${$("#q").value.trim()}"` : "";
 }
 
 function setStatus(cls,msg){ const s=$("#status"); s.className="status "+cls; s.lastElementChild.textContent=msg; }
@@ -345,14 +354,18 @@ async function load(){
     setStatus("demo","dados de exemplo — configure CSV_URL"); render(); return;
   }
   try{
-    const sep = CSV_URL.includes("?")?"&":"?";
-    const res = await fetch(CSV_URL+sep+"_="+Date.now(), {cache:"no-store"});
-    if(!res.ok) throw new Error(res.status);
-    data = prepare(fromSheet(parseCSV(await res.text())));
+    let res;
+    try{ res = await fetch(CSV_URL, {cache:"no-store"}); }
+    catch(e){ throw new Error(location.protocol==="file:" ? "abra pelo site do GitHub, não pelo arquivo" : "sem acesso à planilha (rede bloqueada)"); }
+    if(!res.ok) throw new Error("planilha respondeu "+res.status+" — confira se a aba RANKING está publicada");
+    const txt = await res.text();
+    if(/^\s*<!DOCTYPE|<html/i.test(txt)) throw new Error("a planilha pediu login — publique a aba RANKING");
+    data = prepare(fromSheet(parseCSV(txt)));
+    if(!data.length) throw new Error("planilha carregou, mas nenhum tempo foi encontrado");
     setStatus("", "atualizado às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}));
     render();
   }catch(e){
-    setStatus("err","erro ao carregar a planilha");
+    setStatus("err","erro: "+e.message); console.error(e);
     if(!data.length) $("#rows").innerHTML=`<tr><td colspan="5" class="empty">Não foi possível carregar a classificação.</td></tr>`;
   }
 }
