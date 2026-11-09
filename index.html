@@ -1,171 +1,298 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>K9 Campeonato - Assetto Corsa</title>
-  <style>
-    :root {
-      --bg-color: #0f1115;
-      --card-bg: #1a1d24;
-      --accent-color: #ff3e3e;
-      --text-main: #f0f2f5;
-      --text-muted: #8c93a0;
-      --border-color: #2a2e39;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K9 Campeonato · Assetto Corsa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,700;0,800;1,800&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CONFIGURAÇÃO — edite só estas duas linhas (no <script> abaixo)
+   1) CSV_URL  → link "Publicar na Web" da aba RANKING (formato CSV)
+   2) FORM_URL → link do Google Forms (o mesmo do iframe "Incorporar")
+   ============================================================ */
+:root{
+  --bg:#0b0c0f; --bg2:#121419; --card:#171a21; --line:#262a33;
+  --txt:#eef0f4; --muted:#8b92a1; --red:#e10600; --red2:#ff2d20;
+  --gold:#f5c542; --silver:#c9d1dc; --bronze:#d08a4c; --green:#22c55e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;line-height:1.5;min-height:100vh}
+a{color:inherit}
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      padding: 20px;
-      line-height: 1.6;
-    }
+/* faixa quadriculada */
+.checker{height:14px;background:
+  conic-gradient(#fff 25%,#000 0 50%,#fff 0 75%,#000 0) 0 0/14px 14px;opacity:.9}
 
-    .container { max-width: 1100px; margin: 0 auto; }
-    
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-      padding: 20px 0;
-      border-bottom: 2px solid var(--accent-color);
-    }
-    header h1 { font-size: 2.2rem; text-transform: uppercase; letter-spacing: 1px; }
-    header p { color: var(--text-muted); font-size: 1rem; }
+header{position:relative;overflow:hidden;background:
+  radial-gradient(1200px 400px at 85% -10%,rgba(225,6,0,.35),transparent 60%),
+  linear-gradient(180deg,#14161b,var(--bg));border-bottom:1px solid var(--line)}
+header::after{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(115deg,transparent 0 60px,rgba(255,255,255,.025) 60px 62px);pointer-events:none}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.hero{padding:48px 0 40px;position:relative;z-index:1}
+.tag{display:inline-flex;gap:8px;align-items:center;font:700 13px/1 "Barlow Condensed";letter-spacing:.18em;
+  text-transform:uppercase;color:var(--red2);background:rgba(225,6,0,.1);border:1px solid rgba(225,6,0,.35);
+  padding:7px 12px;border-radius:3px}
+.tag i{width:8px;height:8px;border-radius:50%;background:var(--red2);box-shadow:0 0 10px var(--red2);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3}}
+h1{font:italic 800 clamp(44px,8vw,88px)/.9 "Barlow Condensed";text-transform:uppercase;letter-spacing:-.01em;margin:18px 0 10px}
+h1 span{color:var(--red)}
+.sub{color:var(--muted);max-width:560px;font-size:16px}
+nav.tabs{display:flex;gap:6px;margin-top:28px;flex-wrap:wrap}
+nav.tabs a{font:700 15px/1 "Barlow Condensed";letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+  padding:12px 18px;border:1px solid var(--line);background:var(--bg2);border-radius:3px;transition:.2s}
+nav.tabs a:hover{border-color:var(--red);color:#fff}
+nav.tabs a.cta{background:var(--red);border-color:var(--red)}
+nav.tabs a.cta:hover{background:var(--red2)}
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 30px;
-    }
-    @media (min-width: 850px) {
-      .grid { grid-template-columns: 1fr 1fr; }
-    }
+section{padding:48px 0}
+.sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+h2{font:800 34px/1 "Barlow Condensed";text-transform:uppercase;letter-spacing:.02em}
+h2 small{display:block;font:500 13px/1.4 Inter;color:var(--muted);text-transform:none;letter-spacing:0;margin-top:6px}
 
-    .card {
-      background: var(--card-bg);
-      border-radius: 8px;
-      padding: 20px;
-      border: 1px solid var(--border-color);
-    }
-    .card h2 {
-      font-size: 1.3rem;
-      margin-bottom: 15px;
-      color: var(--accent-color);
-      text-transform: uppercase;
-    }
+/* pódio */
+.podium{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:14px;align-items:end;margin-bottom:28px}
+.pod{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px 18px 0;text-align:center;
+  position:relative;overflow:hidden}
+.pod::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--c)}
+.pod .pos{font:800 64px/1 "Barlow Condensed";color:var(--c);opacity:.95}
+.pod .nm{font:700 20px/1.15 "Barlow Condensed";text-transform:uppercase;margin:8px 0 4px;min-height:46px;
+  display:flex;align-items:center;justify-content:center;word-break:break-word}
+.pod .tm{font:700 22px/1 "JetBrains Mono";margin:6px 0 4px}
+.pod .gp{font:500 12px "JetBrains Mono";color:var(--muted);margin-bottom:16px}
+.pod .base{height:var(--h);background:linear-gradient(180deg,color-mix(in srgb,var(--c) 22%,transparent),transparent);
+  margin:0 -18px;border-top:1px dashed color-mix(in srgb,var(--c) 40%,transparent)}
+.p1{--c:var(--gold);--h:70px}.p2{--c:var(--silver);--h:44px}.p3{--c:var(--bronze);--h:26px}
 
-    /* Tabela de Classificação */
-    .table-wrapper { overflow-x: auto; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-    }
-    th, td {
-      padding: 12px 10px;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 0.95rem;
-    }
-    th {
-      background-color: rgba(255, 62, 62, 0.1);
-      color: var(--accent-color);
-      text-transform: uppercase;
-      font-size: 0.85rem;
-    }
-    .pos-cell { font-weight: bold; font-size: 1.1rem; }
-    .time-cell { font-family: monospace; font-size: 1rem; font-weight: bold; color: #40c463; }
+/* controles */
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search{background:var(--bg2);border:1px solid var(--line);color:var(--txt);padding:11px 14px;border-radius:4px;
+  font:500 14px Inter;min-width:240px;outline:none}
+.search:focus{border-color:var(--red)}
+.status{font:500 12px "JetBrains Mono";color:var(--muted);display:flex;align-items:center;gap:8px}
+.status b{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.status.err b{background:var(--red);box-shadow:0 0 8px var(--red)}
+.status.demo b{background:var(--gold);box-shadow:0 0 8px var(--gold)}
 
-    /* Estilo do Formulário */
-    iframe {
-      width: 100%;
-      height: 650px;
-      border: none;
-      border-radius: 6px;
-    }
-  </style>
+/* tabela */
+.board{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{font:700 12px/1 "Barlow Condensed";letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  text-align:left;padding:14px 16px;background:var(--bg2);border-bottom:1px solid var(--line)}
+tbody td{padding:13px 16px;border-bottom:1px solid var(--line);font-size:15px}
+tbody tr:last-child td{border-bottom:0}
+tbody tr{transition:background .15s}
+tbody tr:hover{background:rgba(255,255,255,.03)}
+td.p{width:70px;font:800 22px/1 "Barlow Condensed";color:var(--muted)}
+tr.t1 td.p{color:var(--gold)} tr.t2 td.p{color:var(--silver)} tr.t3 td.p{color:var(--bronze)}
+tr.t1,tr.t2,tr.t3{box-shadow:inset 3px 0 0 var(--rc)}
+tr.t1{--rc:var(--gold)} tr.t2{--rc:var(--silver)} tr.t3{--rc:var(--bronze)}
+td.n{font-weight:600}
+td.c{font:500 13px "JetBrains Mono";color:var(--muted);width:90px}
+td.t{font:700 15px "JetBrains Mono";text-align:right;white-space:nowrap}
+td.g{font:500 13px "JetBrains Mono";color:var(--muted);text-align:right;width:120px;white-space:nowrap}
+th.r{text-align:right}
+.empty{padding:40px;text-align:center;color:var(--muted)}
+mark{background:rgba(225,6,0,.35);color:#fff;border-radius:2px;padding:0 2px}
+
+/* formulário */
+.form-box{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.form-box iframe{width:100%;height:1150px;border:0;display:block;background:#fff}
+.form-off{padding:28px;color:var(--muted);font-size:14px}
+.form-off code{font-family:"JetBrains Mono";color:var(--txt);background:var(--bg2);padding:2px 6px;border-radius:3px}
+
+footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:13px}
+
+@media (max-width:720px){
+  .podium{grid-template-columns:1fr;gap:10px}
+  .p1{order:-1}
+  .pod .base{display:none}.pod{padding-bottom:6px}
+  td.c,th.c,td.g,th.g{display:none}
+  tbody td{padding:12px 10px}
+  td.p{width:46px}
+  .search{min-width:0;width:100%}
+  .tools{width:100%}
+}
+</style>
 </head>
 <body>
-
-  <div class="container">
-    <header>
-      <h1>K9 Campeonato - Assetto Corsa</h1>
-      <p>Classificação Geral e Inscrições de Pilotos</p>
-    </header>
-
-    <div class="grid">
-      <!-- Seção da Classificação -->
-      <section class="card">
-        <h2>Leaderboard (Tempos)</h2>
-        <div class="table-wrapper">
-          <table id="leaderboard">
-            <thead>
-              <tr>
-                <th>Pos.</th>
-                <th>Piloto</th>
-                <th>Tempo</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td colspan="3" style="text-align:center;">Carregando ranking...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- Seção do Formulário de Inscrição -->
-      <section class="card">
-        <h2>Inscrição de Piloto</h2>
-        <!-- SUBSTITUA O ATRIBUTO SRC PELO EMBED DO SEU GOOGLE FORMS -->
-        <iframe src="https://docs.google.com/forms/d/e/SEU_ID_DO_FORMULARIO/viewform?embedded=true">Carregando…</iframe>
-      </section>
-    </div>
+<div class="checker"></div>
+<header>
+  <div class="wrap hero">
+    <span class="tag"><i></i>Ranking ao vivo</span>
+    <h1>K9 <span>Campeonato</span><br>Assetto Corsa</h1>
+    <p class="sub">Classificação oficial por melhor volta. A tabela é atualizada automaticamente a partir da planilha do campeonato.</p>
+    <nav class="tabs">
+      <a href="#ranking">Classificação</a>
+      <a href="#inscricao" class="cta">Inscreva-se</a>
+    </nav>
   </div>
+</header>
 
-  <script>
-    // Link CSV configurado direto da aba RANKING da sua planilha
-    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSpmePeuXEvjsDGJIwRZljAUhs8EyC03CZw8nJcBYSrj_L-4JcEw2iCS1TX0TM-fZiclvLVzjMf-kgo/pub?gid=497839822&single=true&output=csv';
+<main class="wrap">
+  <section id="ranking">
+    <div class="sec-h">
+      <h2>Classificação<small id="count">Carregando pilotos…</small></h2>
+      <div class="tools">
+        <input id="q" class="search" type="search" placeholder="Buscar piloto ou código…" autocomplete="off">
+        <span id="status" class="status"><b></b><span>conectando…</span></span>
+      </div>
+    </div>
 
-    async function fetchLeaderboard() {
-      try {
-        const response = await fetch(SHEET_CSV_URL);
-        const data = await response.text();
-        
-        const rows = data.split('\n').map(row => row.split(','));
-        const tbody = document.querySelector('#leaderboard tbody');
-        tbody.innerHTML = '';
+    <div id="podium" class="podium"></div>
 
-        for (let i = 1; i < rows.length; i++) {
-          const row = rows[i];
-          
-          if (row.length >= 4 && row[3] && row[3].replace(/"/g, '').trim() !== '') {
-            const pos = row[1] ? row[1].replace(/"/g, '').trim() : `${i}º`;
-            const nome = row[3].replace(/"/g, '').trim();
-            const tempo = row[4] ? row[4].replace(/"/g, '').trim() : '--:--:---';
+    <div class="board">
+      <table>
+        <thead><tr>
+          <th>Pos</th><th class="c">Cód</th><th>Piloto</th><th class="r">Tempo</th><th class="r g">Diferença</th>
+        </tr></thead>
+        <tbody id="rows"><tr><td colspan="5" class="empty">Carregando…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
 
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td class="pos-cell">${pos}</td>
-              <td>${nome}</td>
-              <td class="time-cell">${tempo}</td>
-            `;
-            tbody.appendChild(tr);
-          }
-        }
+  <section id="inscricao">
+    <div class="sec-h"><h2>Inscrição<small>Preencha o formulário para entrar no campeonato.</small></h2></div>
+    <div id="form" class="form-box"></div>
+  </section>
+</main>
 
-        if (tbody.children.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Nenhum piloto classificado ainda.</td></tr>';
-        }
+<footer><div class="wrap">K9 Campeonato · Assetto Corsa — classificação gerada a partir da planilha oficial.</div></footer>
+<div class="checker"></div>
 
-      } catch (error) {
-        console.error('Erro ao buscar ranking:', error);
-        document.querySelector('#leaderboard tbody').innerHTML = 
-          '<tr><td colspan="3" style="text-align:center; color:#ff3e3e;">Erro ao carregar o ranking. Verifique o link do CSV.</td></tr>';
-      }
-    }
+<script>
+/* ========================= CONFIGURAÇÃO ========================= */
+// Link CSV da aba RANKING: Arquivo → Compartilhar → Publicar na Web
+// → escolha "RANKING" e "Valores separados por vírgula (.csv)" → Publicar → copie o link.
+const CSV_URL  = "";
+// Link do Google Forms (o "src" do código de incorporar, termina em ?embedded=true)
+const FORM_URL = "";
+// Atualizar a tabela a cada X segundos
+const REFRESH_SECONDS = 60;
+/* ================================================================ */
 
-    fetchLeaderboard();
-  </script>
+// Dados de exemplo — usados só enquanto CSV_URL estiver vazio
+const DEMO = [
+  ["5867","Leonardo Martins","01:33:793"],["2833","Lucas Ponciano Leutz Toledo","01:33:923"],
+  ["3882","Lucas Ribeiro","01:34:515"],["5813","Nicollas Camilo Reis Ribeiro","01:34:604"],
+  ["0870","Marcos Vinicius Freitas de Souza","01:34:815"],["5862","Lucas Limoli","01:34:914"],
+  ["1813","Gustavo Ramos Guimarães","01:35:015"],["","Augusto Serrat Pinheiro","01:35:123"]
+];
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+// Parser de CSV (lida com aspas e vírgulas dentro de campos)
+function parseCSV(text){
+  const out=[]; let row=[], f="", q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(q){ if(ch==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=ch; }
+    else if(ch==='"') q=true;
+    else if(ch===','){ row.push(f); f=""; }
+    else if(ch==='\n'||ch==='\r'){ if(ch==='\r'&&text[i+1]==='\n') i++; row.push(f); out.push(row); row=[]; f=""; }
+    else f+=ch;
+  }
+  if(f!==""||row.length){ row.push(f); out.push(row); }
+  return out;
+}
+
+// "01:33:793" ou "1:33.793" → milissegundos
+function toMs(t){
+  const p = String(t).trim().split(/[:.,]/).map(Number);
+  if(p.length<3 || p.some(isNaN)) return NaN;
+  const [m,s,ms]=p.slice(-3);
+  return (m*60+s)*1000+ms;
+}
+// milissegundos → "1:33.793"
+function fmt(ms){
+  const m=Math.floor(ms/60000), s=Math.floor(ms%60000/1000), r=ms%1000;
+  return `${m}:${String(s).padStart(2,"0")}.${String(r).padStart(3,"0")}`;
+}
+
+// Lê a aba RANKING: colunas C=COD, D=NOME, E=TEMPO (índices 2,3,4)
+function fromSheet(rows){
+  let start = rows.findIndex(r => r.some(c => /^\s*NOME\s*$/i.test(c)));
+  const h = rows[start] || [];
+  const iN = h.findIndex(c=>/^\s*NOME\s*$/i.test(c)),
+        iC = h.findIndex(c=>/^\s*COD/i.test(c)),
+        iT = h.findIndex(c=>/^\s*TEMPO/i.test(c));
+  const N = iN<0?3:iN, C = iC<0?2:iC, T = iT<0?4:iT;
+  return rows.slice(start+1)
+    .map(r => ({cod:(r[C]||"").trim(), nome:(r[N]||"").trim(), raw:(r[T]||"").trim()}))
+    .filter(d => d.nome && d.raw);
+}
+
+let data=[];
+function prepare(list){
+  return list.map(d => ({...d, ms: toMs(d.raw)}))
+    .filter(d => !isNaN(d.ms))
+    .sort((a,b) => a.ms-b.ms)
+    .map((d,i,arr) => ({...d, pos:i+1, gap: i? d.ms-arr[0].ms : 0}));
+}
+
+function hl(text,q){
+  const t=esc(text); if(!q) return t;
+  const i=text.toLowerCase().indexOf(q); if(i<0) return t;
+  return esc(text.slice(0,i))+"<mark>"+esc(text.slice(i,i+q.length))+"</mark>"+esc(text.slice(i+q.length));
+}
+
+function render(){
+  const q=$("#q").value.trim().toLowerCase();
+  $("#count").textContent = `${data.length} piloto${data.length===1?"":"s"} classificado${data.length===1?"":"s"}`;
+
+  // pódio (ordem visual 2-1-3)
+  const top=data.slice(0,3);
+  $("#podium").innerHTML = [1,0,2].filter(i=>top[i]).map(i=>{
+    const d=top[i];
+    return `<div class="pod p${i+1}"><div class="pos">${i+1}</div>
+      <div class="nm">${esc(d.nome)}</div><div class="tm">${fmt(d.ms)}</div>
+      <div class="gp">${i?"+"+(d.gap/1000).toFixed(3)+"s":"melhor volta"}</div><div class="base"></div></div>`;
+  }).join("");
+
+  const list = q ? data.filter(d => d.nome.toLowerCase().includes(q) || d.cod.includes(q)) : data;
+  $("#rows").innerHTML = list.length ? list.map(d=>`
+    <tr class="${d.pos<=3?"t"+d.pos:""}">
+      <td class="p">${d.pos}</td>
+      <td class="c">${hl(d.cod||"—",q)}</td>
+      <td class="n">${hl(d.nome,q)}</td>
+      <td class="t">${fmt(d.ms)}</td>
+      <td class="g">${d.pos===1?"—":"+"+(d.gap/1000).toFixed(3)}</td>
+    </tr>`).join("") : `<tr><td colspan="5" class="empty">Nenhum piloto encontrado.</td></tr>`;
+}
+
+function setStatus(cls,msg){ const s=$("#status"); s.className="status "+cls; s.lastElementChild.textContent=msg; }
+
+async function load(){
+  if(!CSV_URL){
+    data=prepare(DEMO.map(([cod,nome,raw])=>({cod,nome,raw})));
+    setStatus("demo","dados de exemplo — configure CSV_URL"); render(); return;
+  }
+  try{
+    const sep = CSV_URL.includes("?")?"&":"?";
+    const res = await fetch(CSV_URL+sep+"_="+Date.now(), {cache:"no-store"});
+    if(!res.ok) throw new Error(res.status);
+    data = prepare(fromSheet(parseCSV(await res.text())));
+    setStatus("", "atualizado às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}));
+    render();
+  }catch(e){
+    setStatus("err","erro ao carregar a planilha");
+    if(!data.length) $("#rows").innerHTML=`<tr><td colspan="5" class="empty">Não foi possível carregar a classificação.</td></tr>`;
+  }
+}
+
+// formulário
+$("#form").innerHTML = FORM_URL
+  ? `<iframe src="${esc(FORM_URL)}" loading="lazy" title="Formulário de inscrição">Carregando…</iframe>`
+  : `<div class="form-off">Formulário ainda não configurado. Cole o link do Google Forms em <code>FORM_URL</code> no arquivo <code>index.html</code>.</div>`;
+
+$("#q").addEventListener("input", render);
+load();
+setInterval(load, REFRESH_SECONDS*1000);
+</script>
 </body>
 </html>
