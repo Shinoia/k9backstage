@@ -70,8 +70,10 @@ h2 small{display:block;font:500 13px/1.4 Inter;color:var(--muted);text-transform
 
 /* controles */
 .tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.search{background:var(--bg2);border:1px solid var(--line);color:var(--txt);padding:11px 14px;border-radius:4px;
-  font:500 14px Inter;min-width:240px;outline:none}
+.searchbar{margin-bottom:14px}
+.search{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--txt);padding:14px 16px 14px 44px;border-radius:4px;
+  font:500 15px Inter;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%238b92a1' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='M17 17l-4.5-4.5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:15px center}
 .search:focus{border-color:var(--red)}
 .status{font:500 12px "JetBrains Mono";color:var(--muted);display:flex;align-items:center;gap:8px}
 .status b{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
@@ -143,7 +145,6 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
   td.c,th.c,td.g,th.g{display:none}
   tbody td{padding:12px 10px}
   td.p{width:46px}
-  .search{min-width:0;width:100%}
   .tools{width:100%}
 }
 </style>
@@ -167,12 +168,15 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
     <div class="sec-h">
       <h2>Classificação<small id="count">Carregando pilotos…</small></h2>
       <div class="tools">
-        <input id="q" class="search" type="search" placeholder="Buscar piloto ou código…" autocomplete="off">
         <span id="status" class="status"><b></b><span>conectando…</span></span>
       </div>
     </div>
 
     <div id="podium" class="podium"></div>
+
+    <div class="searchbar">
+      <input id="q" class="search" type="search" placeholder="Buscar piloto ou código…" autocomplete="off">
+    </div>
 
     <div class="board">
       <table>
