@@ -42,6 +42,7 @@
 
         .badge { padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: bold; background: #fff; color: #000; }
         .btn-acao-entregue { background: #fff; border: 2px solid #000; border-radius: 0.4rem; padding: 0.3rem 0.5rem; font-size: 0.75rem; font-weight: bold; color: #000; text-align: center; }
+.bloqueado header, .bloqueado main { visibility: hidden !important; }
         .sync-status.off { background: #ff0000 !important; color: #fff !important; border-color: #fff; animation: piscaOff 1s infinite; }
         @keyframes piscaOff { 50% { opacity: 0.55; } }
         .sync-status { font-size: 0.75rem; font-weight: bold; background: #4ade80; padding: 0.25rem 0.5rem; border-radius: 0.25rem; border: 1px solid #000; color: #000; }
@@ -114,7 +115,7 @@
             if (document.getElementById('janela-chave')) return;
             var el = document.createElement('div');
             el.id = 'janela-chave';
-            el.style.cssText = 'position:fixed; inset:0; background:#000; display:flex; align-items:center; justify-content:center; z-index:100; padding:1rem;';
+            el.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:#000; display:flex; align-items:center; justify-content:center; z-index:100; padding:1rem;';
             el.innerHTML = '<div style="background:#fff; border:3px solid #000; border-radius:0.75rem; padding:1.25rem; width:100%; max-width:22rem; color:#000;">' +
                 '<h3 style="margin-bottom:0.75rem;">🔒 Lugar Comum Bar</h3>' +
                 (aviso ? '<p style="color:#b91c1c; font-weight:bold; margin-bottom:0.5rem;">' + esc(aviso) + '</p>' : '') +
@@ -124,6 +125,7 @@
                 '<input type="password" id="input-chave" autocomplete="current-password" style="width:100%; margin:0.25rem 0 0.75rem;" onkeydown="if(event.key===\'Enter\') entrarComChave()">' +
                 '<button type="button" onclick="entrarComChave()" style="background:#facc15; border:2px solid #000; width:100%;">Entrar</button></div>';
             document.body.appendChild(el);
+            document.body.classList.add('bloqueado');
             var inp = document.getElementById('input-usuario');
             if (inp && inp.focus) inp.focus();
         }
@@ -135,6 +137,7 @@
             guardarSessao(u, v);
             var el = document.getElementById('janela-chave');
             if (el && el.parentNode) el.parentNode.removeChild(el);
+            document.body.classList.remove('bloqueado');
             sincronizar();
         }
         function sair() {
@@ -506,7 +509,7 @@
             fecharJanelaPessoa();
             var el = document.createElement('div');
             el.id = 'janela-pessoa';
-            el.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:50; padding:1rem;';
+            el.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:50; padding:1rem;';
             el.innerHTML = '<div style="background:#fff; border:3px solid #000; border-radius:0.75rem; padding:1rem; width:100%; max-width:26rem; color:#000;">' +
                 '<h3 style="margin-bottom:0.75rem;">+ Nova Pessoa</h3>' +
                 '<label style="font-size:0.8rem;">Nome (comece a digitar para ver os clientes salvos; VIP = mensalista):</label>' +
@@ -725,7 +728,7 @@
             fecharJanelaFechamento();
             var el = document.createElement('div');
             el.id = 'janela-fechamento';
-            el.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:60; padding:1rem;';
+            el.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:60; padding:1rem;';
             document.body.appendChild(el);
             desenharFechamento();
         }
