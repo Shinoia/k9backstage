@@ -1,442 +1,1203 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>K9 Campeonato · Assetto Corsa</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,700;0,800;1,800&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-/* ============================================================
-   CONFIGURAÇÃO — edite só estas duas linhas (no <script> abaixo)
-   1) CSV_URL  → link "Publicar na Web" da aba RANKING (formato CSV)
-   2) ENTRY    → códigos das perguntas do Google Forms
-   ============================================================ */
-:root{
-  --bg:#0b0c0f; --bg2:#121419; --card:#171a21; --line:#262a33;
-  --txt:#eef0f4; --muted:#8b92a1; --red:#e10600; --red2:#ff2d20;
-  --gold:#f5c542; --silver:#c9d1dc; --bronze:#d08a4c; --green:#22c55e;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;line-height:1.5;min-height:100vh}
-a{color:inherit}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lugar Comum Bar</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+        body { background-color: #dc2626; color: #000; min-height: 100vh; display: flex; flex-direction: column; }
+        header { background-color: #b91c1c; border-bottom: 2px solid #991b1b; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        h1 { font-size: 1.5rem; font-weight: bold; color: #000; }
+        .nav-buttons { display: flex; gap: 0.5rem; background: #b91c1c; padding: 0.25rem; border-radius: 0.75rem; border: 2px solid #7f1d1d; align-items: center; }
+        button { cursor: pointer; border: none; font-weight: bold; font-size: 0.875rem; border-radius: 0.5rem; padding: 0.5rem 1rem; color: #000; }
+        .btn-tab { background: transparent; color: #1e1b4b; }
+        .active-caixa { background: #facc15; color: #000; }
+        .active-cozinha { background: #f97316; color: #000; }
+        .active-bar { background: #38bdf8; color: #000; }
+        .active-abertas { background: #c4b5fd; color: #000; }
+        .btn-dia { background: #4ade80; border: 2px solid #000; }
+        main { flex: 1; padding: 1.5rem; display: block; }
+        .grid-caixa { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media(min-width: 1024px) { .grid-caixa { grid-template-columns: 2fr 1fr; } }
+        .mesas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+        @media(min-width: 640px) { .mesas-grid { grid-template-columns: repeat(4, 1fr); } }
+        .mesa-card { background: #ef4444; border: 2px solid #b91c1c; border-radius: 0.75rem; padding: 1rem; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; height: 8rem; color: #000; }
+        .mesa-card.ocupada { border-color: #000; background: #fef08a; }
+        .mesa-card.selecionada { border-color: #000; box-shadow: 0 0 0 3px rgba(0,0,0,0.3); }
+        .painel-lateral { background: #b91c1c; border: 2px solid #991b1b; border-radius: 1rem; padding: 1.25rem; display: flex; flex-direction: column; color: #000; }
+        .form-grupo { background: #ef4444; padding: 0.75rem; border-radius: 0.75rem; border: 2px solid #b91c1c; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        select, input { background: #fff; border: 2px solid #000; border-radius: 0.5rem; padding: 0.5rem; font-size: 0.875rem; width: 100%; font-weight: bold; color: #000; }
+        .btn-lancar { background: #facc15; font-weight: bold; width: 100%; padding: 0.5rem; border-radius: 0.5rem; border: 2px solid #000; color: #000; }
+        .lista-itens { flex: 1; overflow-y: auto; max-height: 14rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .item-row { background: #ef4444; padding: 0.75rem; border-radius: 0.5rem; border: 2px solid #b91c1c; display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; color: #000; }
+        .kds-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 1rem; }
+        @media(min-width: 768px) { .kds-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media(min-width: 1024px) { .kds-grid { grid-template-columns: repeat(4, 1fr); } }
+        
+        .kds-card { padding: 1rem; border-radius: 0.75rem; border: 2px solid #991b1b; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 12rem; gap: 0.5rem; background: #f472b6; color: #000; }
+        .kds-card.preparando { background: #f97316; }
+        .kds-card.pronto { background: #4ade80; }
+        .kds-card.entregue { background: #facc15; }
 
-/* faixa quadriculada */
-.checker{height:14px;background:
-  conic-gradient(#fff 25%,#000 0 50%,#fff 0 75%,#000 0) 0 0/14px 14px;opacity:.9}
-
-header{position:relative;overflow:hidden;background:
-  radial-gradient(1200px 400px at 85% -10%,rgba(225,6,0,.35),transparent 60%),
-  linear-gradient(180deg,#14161b,var(--bg));border-bottom:1px solid var(--line)}
-header::after{content:"";position:absolute;inset:0;background:
-  repeating-linear-gradient(115deg,transparent 0 60px,rgba(255,255,255,.025) 60px 62px);pointer-events:none}
-.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-.hero{padding:48px 0 40px;position:relative;z-index:1}
-.tag{display:inline-flex;gap:8px;align-items:center;font:700 13px/1 "Barlow Condensed";letter-spacing:.18em;
-  text-transform:uppercase;color:var(--red2);background:rgba(225,6,0,.1);border:1px solid rgba(225,6,0,.35);
-  padding:7px 12px;border-radius:3px}
-.tag i{width:8px;height:8px;border-radius:50%;background:var(--red2);box-shadow:0 0 10px var(--red2);animation:pulse 1.6s infinite}
-@keyframes pulse{50%{opacity:.3}}
-h1{font:italic 800 clamp(44px,8vw,88px)/.9 "Barlow Condensed";text-transform:uppercase;letter-spacing:-.01em;margin:18px 0 10px}
-h1 span{color:var(--red)}
-.sub{color:var(--muted);max-width:560px;font-size:16px}
-nav.tabs{display:flex;gap:6px;margin-top:28px;flex-wrap:wrap}
-nav.tabs a{font:700 15px/1 "Barlow Condensed";letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
-  padding:12px 18px;border:1px solid var(--line);background:var(--bg2);border-radius:3px;transition:.2s}
-nav.tabs a:hover{border-color:var(--red);color:#fff}
-nav.tabs a.cta{background:var(--red);border-color:var(--red)}
-nav.tabs a.cta:hover{background:var(--red2)}
-
-section{padding:48px 0}
-.sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
-h2{font:800 34px/1 "Barlow Condensed";text-transform:uppercase;letter-spacing:.02em}
-h2 small{display:block;font:500 13px/1.4 Inter;color:var(--muted);text-transform:none;letter-spacing:0;margin-top:6px}
-
-/* pódio */
-.podium{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:14px;align-items:end;margin-bottom:28px}
-.pod{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px 18px 0;text-align:center;
-  position:relative;overflow:hidden}
-.pod::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--c)}
-.pod .pos{font:800 64px/1 "Barlow Condensed";color:var(--c);opacity:.95}
-.pod .nm{font:700 20px/1.15 "Barlow Condensed";text-transform:uppercase;margin:8px 0 4px;min-height:46px;
-  display:flex;align-items:center;justify-content:center;word-break:break-word}
-.pod .tm{font:700 22px/1 "JetBrains Mono";margin:6px 0 4px}
-.pod .gp{font:500 12px "JetBrains Mono";color:var(--muted);margin-bottom:16px}
-.pod .base{height:var(--h);background:linear-gradient(180deg,color-mix(in srgb,var(--c) 22%,transparent),transparent);
-  margin:0 -18px;border-top:1px dashed color-mix(in srgb,var(--c) 40%,transparent)}
-.p1{--c:var(--gold);--h:70px}.p2{--c:var(--silver);--h:44px}.p3{--c:var(--bronze);--h:26px}
-
-/* controles */
-.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.search{background:var(--bg2);border:1px solid var(--line);color:var(--txt);padding:11px 14px;border-radius:4px;
-  font:500 14px Inter;min-width:240px;outline:none}
-.search:focus{border-color:var(--red)}
-.status{font:500 12px "JetBrains Mono";color:var(--muted);display:flex;align-items:center;gap:8px}
-.status b{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
-.status.err b{background:var(--red);box-shadow:0 0 8px var(--red)}
-.status.demo b{background:var(--gold);box-shadow:0 0 8px var(--gold)}
-
-/* tabela */
-.board{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden}
-table{width:100%;border-collapse:collapse}
-thead th{font:700 12px/1 "Barlow Condensed";letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
-  text-align:left;padding:14px 16px;background:var(--bg2);border-bottom:1px solid var(--line)}
-tbody td{padding:13px 16px;border-bottom:1px solid var(--line);font-size:15px}
-tbody tr:last-child td{border-bottom:0}
-tbody tr{transition:background .15s}
-tbody tr:hover{background:rgba(255,255,255,.03)}
-td.p{width:70px;font:800 22px/1 "Barlow Condensed";color:var(--muted)}
-tr.t1 td.p{color:var(--gold)} tr.t2 td.p{color:var(--silver)} tr.t3 td.p{color:var(--bronze)}
-tr.t1,tr.t2,tr.t3{box-shadow:inset 3px 0 0 var(--rc)}
-tr.t1{--rc:var(--gold)} tr.t2{--rc:var(--silver)} tr.t3{--rc:var(--bronze)}
-td.n{font-weight:600}
-td.c{font:500 13px "JetBrains Mono";color:var(--muted);width:90px}
-td.t{font:700 15px "JetBrains Mono";text-align:right;white-space:nowrap}
-td.g{font:500 13px "JetBrains Mono";color:var(--muted);text-align:right;width:120px;white-space:nowrap}
-th.r{text-align:right}
-.more{margin-top:14px;text-align:center;font-size:13px;color:var(--muted)}
-.more:empty{display:none}
-.empty{padding:40px;text-align:center;color:var(--muted)}
-mark{background:rgba(225,6,0,.35);color:#fff;border-radius:2px;padding:0 2px}
-
-/* formulário */
-.form-box{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:28px;max-width:720px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.fld{display:flex;flex-direction:column;gap:7px}
-.fld.full{grid-column:1/-1}
-.fld label,.fld legend{font:700 13px/1 "Barlow Condensed";letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.fld label em,.fld legend em{color:var(--red2);font-style:normal}
-.fld input[type=text],.fld input[type=email],.fld input[type=tel]{background:var(--bg2);border:1px solid var(--line);
-  color:var(--txt);padding:13px 14px;border-radius:4px;font:500 15px Inter;outline:none;transition:.15s}
-.fld input:focus{border-color:var(--red)}
-.fld.bad input{border-color:var(--red2)}
-.fld .err{font-size:12px;color:var(--red2);min-height:0;display:none}
-.fld.bad .err{display:block}
-fieldset.fld{border:0}
-.opts{display:flex;gap:10px}
-.opts label{flex:1;cursor:pointer;font:600 15px Inter;letter-spacing:0;text-transform:none;color:var(--txt)}
-.opts input{position:absolute;opacity:0}
-.opts span{display:block;text-align:center;padding:12px;border:1px solid var(--line);background:var(--bg2);border-radius:4px;transition:.15s}
-.opts input:checked+span{border-color:var(--red);background:rgba(225,6,0,.15)}
-.opts input:focus-visible+span{outline:2px solid var(--red2)}
-.btn{margin-top:24px;width:100%;background:var(--red);color:#fff;border:0;padding:16px;border-radius:4px;cursor:pointer;
-  font:800 18px/1 "Barlow Condensed";letter-spacing:.14em;text-transform:uppercase;transition:.2s}
-.btn:hover{background:var(--red2)}
-.btn:disabled{opacity:.5;cursor:wait}
-.note{font-size:12px;color:var(--muted);margin-top:14px}
-.done{text-align:center;padding:30px 10px}
-.done h3{font:800 36px/1 "Barlow Condensed";text-transform:uppercase;margin:12px 0 8px}
-.done p{color:var(--muted)}
-.done .flag{width:64px;height:64px;margin:0 auto;border-radius:50%;background:
-  conic-gradient(#fff 25%,#000 0 50%,#fff 0 75%,#000 0) 0 0/16px 16px;border:3px solid var(--green)}
-.done button{margin-top:18px;background:none;border:1px solid var(--line);color:var(--txt);padding:10px 16px;border-radius:4px;cursor:pointer}
-@media (max-width:720px){.grid{grid-template-columns:1fr}.form-box{padding:20px}}
-
-footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:13px}
-
-@media (max-width:720px){
-  .podium{grid-template-columns:1fr;gap:10px}
-  .p1{order:-1}
-  .pod .base{display:none}.pod{padding-bottom:6px}
-  td.c,th.c,td.g,th.g{display:none}
-  tbody td{padding:12px 10px}
-  td.p{width:46px}
-  .search{min-width:0;width:100%}
-  .tools{width:100%}
-}
-</style>
+        .badge { padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: bold; background: #fff; color: #000; }
+        .btn-acao-entregue { background: #fff; border: 2px solid #000; border-radius: 0.4rem; padding: 0.3rem 0.5rem; font-size: 0.75rem; font-weight: bold; color: #000; text-align: center; }
+        .sync-status.off { background: #ff0000 !important; color: #fff !important; border-color: #fff; animation: piscaOff 1s infinite; }
+        @keyframes piscaOff { 50% { opacity: 0.55; } }
+        .sync-status { font-size: 0.75rem; font-weight: bold; background: #4ade80; padding: 0.25rem 0.5rem; border-radius: 0.25rem; border: 1px solid #000; color: #000; }
+    </style>
 </head>
 <body>
-<div class="checker"></div>
-<header>
-  <div class="wrap hero">
-    <span class="tag"><i></i>Ranking ao vivo</span>
-    <h1>K9 <span>Campeonato</span><br>Assetto Corsa</h1>
-    <p class="sub">Classificação oficial por melhor volta. A tabela é atualizada automaticamente a partir da planilha do campeonato.</p>
-    <nav class="tabs">
-      <a href="#ranking">Classificação</a>
-      <a href="#inscricao" class="cta">Inscreva-se</a>
-    </nav>
-  </div>
-</header>
-
-<main class="wrap">
-  <section id="ranking">
-    <div class="sec-h">
-      <h2>Classificação<small id="count">Carregando pilotos…</small></h2>
-      <div class="tools">
-        <input id="q" class="search" type="search" placeholder="Buscar piloto ou código…" autocomplete="off">
-        <span id="status" class="status"><b></b><span>conectando…</span></span>
-      </div>
-    </div>
-
-    <div id="podium" class="podium"></div>
-
-    <div class="board">
-      <table>
-        <thead><tr>
-          <th>Pos</th><th class="c">Cód</th><th>Piloto</th><th class="r">Tempo</th><th class="r g">Diferença</th>
-        </tr></thead>
-        <tbody id="rows"><tr><td colspan="5" class="empty">Carregando…</td></tr></tbody>
-      </table>
-    </div>
-    <p id="more" class="more"></p>
-  </section>
-
-  <section id="inscricao">
-    <div class="sec-h"><h2>Inscrição<small>Preencha o formulário para entrar no campeonato.</small></h2></div>
-    <div class="form-box">
-      <form id="cad" novalidate>
-        <div class="grid">
-          <div class="fld full"><label for="f-nome">Nome completo <em>*</em></label>
-            <input id="f-nome" name="nome" type="text" autocomplete="name" maxlength="80">
-            <span class="err">Informe seu nome completo.</span></div>
-          <div class="fld"><label for="f-cpf">CPF <em>*</em></label>
-            <input id="f-cpf" name="cpf" type="text" inputmode="numeric" placeholder="000.000.000-00" maxlength="14">
-            <span class="err">CPF inválido.</span></div>
-          <div class="fld"><label for="f-wpp">WhatsApp <em>*</em></label>
-            <input id="f-wpp" name="wpp" type="tel" inputmode="numeric" placeholder="(13) 99999-9999" maxlength="15">
-            <span class="err">Informe um WhatsApp com DDD.</span></div>
-          <div class="fld full"><label for="f-email">E-mail <em>*</em></label>
-            <input id="f-email" name="email" type="email" autocomplete="email" placeholder="seu@email.com">
-            <span class="err">Informe um e-mail válido.</span></div>
-          <fieldset class="fld"><legend>Já competiu? <em>*</em></legend>
-            <div class="opts">
-              <label><input type="radio" name="competiu" value="Sim"><span>Sim</span></label>
-              <label><input type="radio" name="competiu" value="Não"><span>Não</span></label>
-            </div><span class="err">Escolha uma opção.</span></fieldset>
-          <fieldset class="fld"><legend>Quer participar de outros campeonatos? <em>*</em></legend>
-            <div class="opts">
-              <label><input type="radio" name="outros" value="Sim"><span>Sim</span></label>
-              <label><input type="radio" name="outros" value="Não"><span>Não</span></label>
-            </div><span class="err">Escolha uma opção.</span></fieldset>
+    <header>
+        <div>
+            <h1>🍺 Lugar Comum Bar</h1>
         </div>
-        <button class="btn" type="submit">Confirmar inscrição</button>
-        <p class="note">Seus dados (CPF, WhatsApp e e-mail) são usados só pela organização e não aparecem no ranking.</p>
-      </form>
-      <div id="done" class="done" hidden>
-        <div class="flag"></div>
-        <h3>Inscrição enviada!</h3>
-        <p>Agora é acelerar. Seu tempo aparece na classificação assim que for registrado.</p>
-        <button type="button" id="again">Fazer outra inscrição</button>
-      </div>
-    </div>
-  </section>
-</main>
+        <div class="nav-buttons">
+            <button id="btn-aba-caixa" class="btn-tab active-caixa" onclick="mudarAba('caixa')">🧮 Caixa / Mesas</button>
+            <button id="btn-aba-cozinha" class="btn-tab" onclick="mudarAba('cozinha')">🍳 Cozinha</button>
+            <button id="btn-aba-bar" class="btn-tab" onclick="mudarAba('bar')">🍻 Bar</button>
+            <button id="btn-aba-abertas" class="btn-tab" onclick="mudarAba('abertas')">📋 Abertas</button>
+            <button id="btn-aba-finalizadas" class="btn-tab" onclick="mudarAba('finalizadas')">✅ Finalizadas</button>
+            <button class="btn-dia" onclick="finalizarDia()">🏁 Finalizar Dia</button>
+            <span id="info-usuario" class="sync-status" style="background:#fff;"></span>
+            <button class="btn-tab" onclick="sair()" title="Sair deste aparelho">Sair</button>
+        </div>
+    </header>
+    <div style="display:flex; justify-content:flex-end; padding:0.35rem 1rem 0;"><span id="sync-indicator" class="sync-status">Conectado</span></div>
 
-<footer><div class="wrap">K9 Campeonato · Assetto Corsa — classificação gerada a partir da planilha oficial.</div></footer>
-<div class="checker"></div>
+    <main id="app-conteudo"></main>
 
-<script>
-/* ========================= CONFIGURAÇÃO ========================= */
-// Link CSV da aba RANKING: Arquivo → Compartilhar → Publicar na Web
-// → escolha "RANKING" e "Valores separados por vírgula (.csv)" → Publicar → copie o link.
-const CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSpmePeuXEvjsDGJIwRZljAUhs8EyC03CZw8nJcBYSrj_L-4JcEw2iCS1TX0TM-fZiclvLVzjMf-kgo/pub?gid=497839822&single=true&output=csv";
-// Formulário: ID do Google Forms (a parte entre /e/ e /viewform no link)
-const FORM_ID = "1FAIpQLScnLPWYWUG7wDEnts95c_mP25ph6qqAOJX1HUeaLNgwtZw4Ew";
-// Código de cada pergunta (entry.XXXXXXX) — veja como pegar no passo a passo.
-// O texto enviado nas perguntas Sim/Não precisa ser IGUAL ao das opções do Forms.
-const ENTRY = {
-  cpf:      "entry.362328070",
-  nome:     "entry.530832851",
-  wpp:      "entry.411931172",
-  competiu: "entry.1642324945",
-  outros:   "entry.692842771",
-  email:    "emailAddress"      // e-mail coletado pelas configurações do Forms
-};
-// Quantos pilotos aparecem na tabela (os outros só pela busca)
-const TOP_N = 10;
-// Atualizar a tabela a cada X segundos
-const REFRESH_SECONDS = 60;
-/* ================================================================ */
+    <script>
+        var API_URL = "https://script.google.com/macros/s/AKfycbyawZahFXeytjgTj2-yId6TIQwF7RoSqF2alHUj4AF46Huhmsl4keW4bUm6sakf8p_M/exec";
 
-// Dados de exemplo — usados só enquanto CSV_URL estiver vazio
-const DEMO = [
-  ["5867","Leonardo Martins","01:33:793"],["2833","Lucas Ponciano Leutz Toledo","01:33:923"],
-  ["3882","Lucas Ribeiro","01:34:515"],["5813","Nicollas Camilo Reis Ribeiro","01:34:604"],
-  ["0870","Marcos Vinicius Freitas de Souza","01:34:815"],["5862","Lucas Limoli","01:34:914"],
-  ["1813","Gustavo Ramos Guimarães","01:35:015"],["","Augusto Serrat Pinheiro","01:35:123"]
-];
+        // ---------- login da equipe (usuário + senha da aba "Key" da planilha) ----------
+        // Todas as chamadas ao servidor levam usuário e senha; sem eles o servidor não responde.
+        // O login fica guardado neste aparelho até o fim do dia de trabalho (06:00) e sobrevive a atualizações da página.
+        function diaDeTrabalho() { return new Date(Date.now() - 6 * 3600 * 1000).toDateString(); }
+        function lerSessao() {
+            try {
+                var v = JSON.parse(localStorage.getItem('lcb_sessao2') || 'null');
+                return (v && v.dia === diaDeTrabalho() && v.chave && v.usuario) ? v : null;
+            } catch (e) { return null; }
+        }
+        function guardarSessao(usuario, chave) {
+            try { if (chave) localStorage.setItem('lcb_sessao2', JSON.stringify({ usuario: usuario, chave: chave, dia: diaDeTrabalho() })); else localStorage.removeItem('lcb_sessao2'); } catch (e) {}
+        }
+        var SESSAO = lerSessao();
+        var CHAVE = SESSAO ? SESSAO.chave : '';
+        var USUARIO = SESSAO ? SESSAO.usuario : '';
+        var fetchOriginal = fetch;
+        fetch = function(u, o) {
+            if (String(u).indexOf(API_URL) !== 0) return fetchOriginal(u, o);
+            if (CHAVE && !lerSessao()) { CHAVE = ''; USUARIO = ''; } // virou o dia de trabalho
+            if (!CHAVE) { pedirChave(''); return Promise.reject(new Error('sem login')); }
+            if (o && o.method === 'POST') {
+                var corpo = {};
+                try { corpo = JSON.parse(o.body); } catch (e) {}
+                corpo.chave = CHAVE; corpo.usuario = USUARIO;
+                var o2 = {}; for (var k in o) o2[k] = o[k];
+                o2.body = JSON.stringify(corpo);
+                return fetchOriginal(u, o2);
+            }
+            u = String(u) + (String(u).indexOf('?') >= 0 ? '&' : '?') + 'chave=' + encodeURIComponent(CHAVE) + '&usuario=' + encodeURIComponent(USUARIO);
+            return fetchOriginal(u, o).then(function(res) {
+                return res.clone().json().then(function(j) {
+                    if (j && j.negado) {
+                        CHAVE = ''; USUARIO = ''; guardarSessao('', '');
+                        pedirChave('Usuário ou senha incorretos.');
+                    }
+                    return res;
+                }).catch(function() { return res; });
+            });
+        };
+        function pedirChave(aviso) {
+            if (document.getElementById('janela-chave')) return;
+            var el = document.createElement('div');
+            el.id = 'janela-chave';
+            el.style.cssText = 'position:fixed; inset:0; background:#000; display:flex; align-items:center; justify-content:center; z-index:100; padding:1rem;';
+            el.innerHTML = '<div style="background:#fff; border:3px solid #000; border-radius:0.75rem; padding:1.25rem; width:100%; max-width:22rem; color:#000;">' +
+                '<h3 style="margin-bottom:0.75rem;">🔒 Lugar Comum Bar</h3>' +
+                (aviso ? '<p style="color:#b91c1c; font-weight:bold; margin-bottom:0.5rem;">' + esc(aviso) + '</p>' : '') +
+                '<label style="font-size:0.85rem;">Usuário:</label>' +
+                '<input type="text" id="input-usuario" autocomplete="username" style="width:100%; margin:0.25rem 0 0.5rem;">' +
+                '<label style="font-size:0.85rem;">Senha:</label>' +
+                '<input type="password" id="input-chave" autocomplete="current-password" style="width:100%; margin:0.25rem 0 0.75rem;" onkeydown="if(event.key===\'Enter\') entrarComChave()">' +
+                '<button type="button" onclick="entrarComChave()" style="background:#facc15; border:2px solid #000; width:100%;">Entrar</button></div>';
+            document.body.appendChild(el);
+            var inp = document.getElementById('input-usuario');
+            if (inp && inp.focus) inp.focus();
+        }
+        function entrarComChave() {
+            var u = String((document.getElementById('input-usuario') || {}).value || '').trim();
+            var v = String((document.getElementById('input-chave') || {}).value || '').trim();
+            if (!u || !v) return;
+            CHAVE = v; USUARIO = u;
+            guardarSessao(u, v);
+            var el = document.getElementById('janela-chave');
+            if (el && el.parentNode) el.parentNode.removeChild(el);
+            sincronizar();
+        }
+        function sair() {
+            if (!confirm('Sair do sistema neste aparelho?')) return;
+            CHAVE = ''; USUARIO = ''; guardarSessao('', '');
+            estado.usuario = null;
+            atualizarUsuario();
+            pedirChave('');
+        }
+        function atualizarUsuario() {
+            var el = document.getElementById('info-usuario');
+            if (!el) return;
+            el.textContent = estado.usuario ? ('👤 ' + estado.usuario.nome + (estado.usuario.admin ? ' (admin)' : '') + ' · script ' + (estado.versao || '?')) : '';
+        }
+        function exigirAdmin() {
+            if (estado.usuario && !estado.usuario.admin) { alert('Somente administradores podem fazer isso.'); return false; }
+            return true;
+        }
 
-const $ = s => document.querySelector(s);
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+        // Cardápio de segurança preenchido para garantir funcionamento imediato
+        var CARDAPIO = [
+            { nome: "Refrigerante", preco: 6.00, estoque: 50, tipo: "bar" },
+            { nome: "Kariri", preco: 10.00, estoque: 30, tipo: "bar" },
+            { nome: "Conserva", preco: 15.00, estoque: 20, tipo: "cozinha" }
+        ];
+        
+        var estado = {
+            abaAtiva: 'caixa',
+            mesaSelecionadaId: null,
+            produtoSelecionadoCache: 'Refrigerante',
+            quantidadeCache: 1,
+            pedidosGlobais: [],
+            pendentes: [],
+            overrides: {},
+            obsCache: '',
+            mesas: [],
+            pessoas: [],
+            pessoasNovas: [],
+            finalizadas: [],
+            frequentes: [],
+            clientes: [],
+            usuario: null,
+            fechamento: null
+        };
+        var PREFIXO_PESSOA = 'Pessoa: ';
 
-// Parser de CSV (lida com aspas e vírgulas dentro de campos)
-function parseCSV(text){
-  const out=[]; let row=[], f="", q=false;
-  for(let i=0;i<text.length;i++){
-    const ch=text[i];
-    if(q){ if(ch==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=ch; }
-    else if(ch==='"') q=true;
-    else if(ch===','){ row.push(f); f=""; }
-    else if(ch==='\n'||ch==='\r'){ if(ch==='\r'&&text[i+1]==='\n') i++; row.push(f); out.push(row); row=[]; f=""; }
-    else f+=ch;
-  }
-  if(f!==""||row.length){ row.push(f); out.push(row); }
-  return out;
-}
+        for (var i = 1; i <= 8; i++) {
+            estado.mesas.push({ id: i, status: 'livre', itens: [], contadorFehamentos: 0 });
+        }
 
-// "01:33:793" ou "1:33.793" → milissegundos
-function toMs(t){
-  const p = String(t).trim().split(/[:.,]/).map(Number);
-  if(p.length<3 || p.some(isNaN)) return NaN;
-  const [m,s,ms]=p.slice(-3);
-  return (m*60+s)*1000+ms;
-}
-// milissegundos → "1:33.793"
-function fmt(ms){
-  const m=Math.floor(ms/60000), s=Math.floor(ms%60000/1000), r=ms%1000;
-  return `${m}:${String(s).padStart(2,"0")}.${String(r).padStart(3,"0")}`;
-}
+        var CORES_STATUS = { pendente: '#f472b6', preparando: '#f97316', pronto: '#4ade80', entregue: '#facc15' };
+        function corStatus(st) { return CORES_STATUS[st] || '#fff'; }
 
-// Lê a aba RANKING: colunas C=COD, D=NOME, E=TEMPO (índices 2,3,4)
-function fromSheet(rows){
-  let start = rows.findIndex(r => r.some(c => /^\s*NOME\s*$/i.test(c)));
-  const h = rows[start] || [];
-  const iN = h.findIndex(c=>/^\s*NOME\s*$/i.test(c)),
-        iC = h.findIndex(c=>/^\s*COD/i.test(c)),
-        iT = h.findIndex(c=>/^\s*TEMPO/i.test(c));
-  const N = iN<0?3:iN, C = iC<0?2:iC, T = iT<0?4:iT;
-  return rows.slice(start+1)
-    .map(r => ({cod:(r[C]||"").trim(), nome:(r[N]||"").trim(), raw:(r[T]||"").trim()}))
-    .filter(d => d.nome && d.raw);
-}
+        // chave estável de um item aberto: mesa + produto + ordem entre os itens abertos iguais.
+        // Não usa o horário: um pedido recém-lançado (ainda sem horário) e o mesmo pedido depois de gravado na planilha têm a mesma chave.
+        function chavePedido(lista, idx) {
+            var q0 = lista[idx];
+            if (q0.status === 'fechado') return 'fechado|' + idx;
+            var base = String(q0.mesa) + '|' + q0.produto;
+            var n = 0;
+            for (var i = 0; i < idx; i++) {
+                var q = lista[i];
+                if (q.status !== 'fechado' && String(q.mesa) + '|' + q.produto === base) n++;
+            }
+            return base + '|' + n;
+        }
 
-let data=[];
-function prepare(list){
-  return list.map(d => ({...d, ms: toMs(d.raw)}))
-    .filter(d => !isNaN(d.ms))
-    .sort((a,b) => a.ms-b.ms)
-    .map((d,i,arr) => ({...d, pos:i+1, gap: i? d.ms-arr[0].ms : 0}));
-}
+        function esc(t) {
+            return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+        function brl(v) { return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+        // observação do pedido (ex.: sem cebola): texto curto, sem quebra de linha
+        function limparObs(v) {
+            return String(v === undefined || v === null ? '' : v).replace(/[\r\n\t]+/g, ' ').replace(/\s+/g, ' ').replace(/^[=+\-@\s]+/, '').trim().substring(0, 60);
+        }
+        function htmlObs(obs, grande) {
+            if (!obs) return '';
+            return grande
+                ? '<div style="font-size:0.9rem; font-weight:bold; background:#fff; border:2px solid #000; border-radius:0.4rem; padding:0.15rem 0.4rem; margin-top:0.25rem;">📝 ' + esc(obs) + '</div>'
+                : '<br><small>📝 ' + esc(obs) + '</small>';
+        }
+        function ehVip(chave) { return String(chave).indexOf('VIP-') === 0; }
+        function ehPessoa(chave) { return String(chave).indexOf(PREFIXO_PESSOA) === 0; }
+        function limparNome(n) {
+            return String(n || '').replace(/[.|<>&"'`=+@\\]/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 30);
+        }
+        function todasMesas() { return estado.mesas.concat(estado.pessoas); }
+        function acharMesa(id) { return todasMesas().find(function(m) { return String(m.id) === String(id); }); }
+        // nome para mostrar na tela
+        function nomeMesa(m) {
+            if (m.pessoa) return (m.vip ? '⭐ ' : '👤 ') + m.nome;
+            var r = m.idExibicao || m.id;
+            if (m.status === 'livre' && m.contadorFehamentos > 0) r = m.id + '.' + m.contadorFehamentos;
+            return 'Mesa ' + r;
+        }
+        // identificador gravado na coluna A da planilha para novos pedidos
+        function chaveMesa(m) {
+            if (m.pessoa) return m.id;
+            if (m.status === 'livre' && m.contadorFehamentos > 0) return m.id + '.' + m.contadorFehamentos;
+            if (m.status === 'ocupada' && m.idExibicao) return m.idExibicao;
+            return m.id;
+        }
+        function totalMesaObj(m) {
+            var t = 0;
+            for (var i = 0; i < m.itens.length; i++) t += m.itens[i].qnt * m.itens[i].preco;
+            return t;
+        }
 
-function hl(text,q){
-  const t=esc(text); if(!q) return t;
-  const i=text.toLowerCase().indexOf(q); if(i<0) return t;
-  return esc(text.slice(0,i))+"<mark>"+esc(text.slice(i,i+q.length))+"</mark>"+esc(text.slice(i+q.length));
-}
+        function itemEhCozinha(it) {
+            var t = String(it.tipo || 'bar').toLowerCase();
+            return t.indexOf('cozinha') >= 0 || t.indexOf('petisco') >= 0 || t.indexOf('comida') >= 0;
+        }
+        // cor do grupo (bar ou cozinha) da mesa: pronto > preparando > pendente > entregue; branco = sem itens
+        function corGrupo(itens, cozinha) {
+            var sts = itens.filter(function(it) { return itemEhCozinha(it) === cozinha; })
+                           .map(function(it) { return it.statusPreparo || 'pendente'; });
+            if (sts.length === 0) return '#fff';
+            return corStatus(sts.indexOf('pronto') >= 0 ? 'pronto' : sts.indexOf('preparando') >= 0 ? 'preparando' : sts.indexOf('pendente') >= 0 ? 'pendente' : 'entregue');
+        }
+        function bolinha(rotulo, cor) {
+            return '<span style="background:' + cor + '; border: 2px solid #000; border-radius: 999px; padding: 0 0.4rem; font-size: 0.65rem; font-weight: bold; color: #000; display: inline-block; line-height: 1.1rem; margin-left: 0.25rem;">' + rotulo + '</span>';
+        }
 
-function render(){
-  const q=$("#q").value.trim().toLowerCase();
-  $("#count").textContent = `${data.length} piloto${data.length===1?"":"s"} classificado${data.length===1?"":"s"}`;
+        // estoque disponível = estoque da planilha - pedidos enviados que o servidor ainda não gravou
+        function estoqueDisponivel(nome) {
+            var p = CARDAPIO.find(function(x) { return x.nome === nome; });
+            if (!p) return 0;
+            var reservado = 0;
+            estado.pendentes.forEach(function(pd) {
+                if (pd.pedido.produto === nome) reservado += Number(pd.pedido.qnt) || 0;
+            });
+            return (Number(p.estoque) || 0) - reservado;
+        }
+        function primeiroDisponivel() {
+            for (var c = 0; c < CARDAPIO.length; c++) {
+                if (estoqueDisponivel(CARDAPIO[c].nome) > 0) return CARDAPIO[c].nome;
+            }
+            return '';
+        }
+        function desfazerPedido(novo, mensagem) {
+            estado.pendentes = estado.pendentes.filter(function(pd) { return pd.pedido !== novo; });
+            estado.pedidosGlobais = estado.pedidosGlobais.filter(function(x) { return x !== novo; });
+            processarPedidos();
+            renderizar();
+            alert(mensagem);
+            sincronizar();
+        }
 
-  // pódio (ordem visual 2-1-3)
-  const top=data.slice(0,3);
-  $("#podium").innerHTML = [1,0,2].filter(i=>top[i]).map(i=>{
-    const d=top[i];
-    return `<div class="pod p${i+1}"><div class="pos">${i+1}</div>
-      <div class="nm">${esc(d.nome)}</div><div class="tm">${fmt(d.ms)}</div>
-      <div class="gp">${i?"+"+(d.gap/1000).toFixed(3)+"s":"melhor volta"}</div><div class="base"></div></div>`;
-  }).join("");
+        function processarPedidos() {
+            try {
+                for (var i = 0; i < estado.mesas.length; i++) {
+                    estado.mesas[i].itens = [];
+                    estado.mesas[i].status = 'livre';
+                    estado.mesas[i].contadorFehamentos = 0;
+                    estado.mesas[i].idExibicao = null;
+                    estado.mesas[i].abertaEm = '';
+                }
 
-  const list = q ? data.filter(d => d.nome.toLowerCase().includes(q) || d.cod.includes(q)) : data.slice(0, TOP_N);
-  $("#rows").innerHTML = list.length ? list.map(d=>`
-    <tr class="${d.pos<=3?"t"+d.pos:""}">
-      <td class="p">${d.pos}</td>
-      <td class="c">${hl(d.cod||"—",q)}</td>
-      <td class="n">${hl(d.nome,q)}</td>
-      <td class="t">${fmt(d.ms)}</td>
-      <td class="g">${d.pos===1?"—":"+"+(d.gap/1000).toFixed(3)}</td>
-    </tr>`).join("") : `<tr><td colspan="5" class="empty">Nenhum piloto encontrado.</td></tr>`;
+                var contagemFechamentos = {};
+                var fechSets = {};
+                var pessoasMapa = {};
+                var finMapa = {}, finLista = [];
 
-  $("#more").textContent = !q && data.length > TOP_N
-    ? `Mostrando os ${TOP_N} primeiros de ${data.length} pilotos. Use a busca para encontrar seu nome.`
-    : q ? `${list.length} resultado${list.length===1?"":"s"} para "${$("#q").value.trim()}"` : "";
-}
+                for (var k = 0; k < estado.pedidosGlobais.length; k++) {
+                    var p = estado.pedidosGlobais[k];
+                    if (!p || !p.mesa) continue;
+                    if (p.status === 'fechado') {
+                        var kf = String(p.mesa) + '|' + String(p.tchau);
+                        if (!finMapa[kf]) { finMapa[kf] = { k: kf, mesa: String(p.mesa), tchau: String(p.tchau), abertura: p.oi || '', itens: [], total: 0, forma: p.forma || '' }; finLista.push(finMapa[kf]); }
+                        var pcf = CARDAPIO.find(function(c) { return c.nome && c.nome.toLowerCase() === String(p.produto).toLowerCase(); });
+                        var prf = p.preco || (pcf ? pcf.preco : 0);
+                        finMapa[kf].itens.push({ produto: p.produto, qnt: Number(p.qnt || 1), preco: prf, obs: p.obs || '', pedidoEm: p.pedidoEm || p.oi || '' });
+                        finMapa[kf].total += Number(p.qnt || 1) * prf;
+                    }
+                    var baseId = String(p.mesa).split('.')[0];
+                    var mesaObj = estado.mesas.find(function(m) { return m.id == baseId; });
+                    if (ehPessoa(p.mesa) || ehVip(p.mesa)) {
+                        if (p.status === 'fechado') continue;
+                        if (!pessoasMapa[p.mesa]) {
+                            pessoasMapa[p.mesa] = { id: p.mesa, pessoa: true, vip: ehVip(p.mesa), nome: ehVip(p.mesa) ? String(p.mesa) : String(p.mesa).substring(PREFIXO_PESSOA.length), status: 'ocupada', itens: [], idExibicao: p.mesa, contadorFehamentos: 0, abertaEm: p.oi || '' };
+                        }
+                        mesaObj = pessoasMapa[p.mesa];
+                        var pc = CARDAPIO.find(function(c) { return c.nome && c.nome.toLowerCase() === String(p.produto).toLowerCase(); });
+                        mesaObj.itens.push({ idItem: k, produto: p.produto, qnt: Number(p.qnt || 1), preco: pc ? pc.preco : (p.preco || 0), tipo: p.tipo || 'bar', statusPreparo: p.statusPreparo || 'pendente', linha: p.linha, mesaKey: p.mesa, obs: p.obs || '' });
+                        continue;
+                    }
 
-function setStatus(cls,msg){ const s=$("#status"); s.className="status "+cls; s.lastElementChild.textContent=msg; }
+                    if (mesaObj) {
+                        if (p.status === 'fechado') {
+                            fechSets[baseId] = fechSets[baseId] || {};
+                            fechSets[baseId][String(p.tchau)] = true;
+                            contagemFechamentos[baseId] = Object.keys(fechSets[baseId]).length;
+                            mesaObj.status = 'livre';
+                        } else {
+                            mesaObj.status = 'ocupada';
+                            mesaObj.idExibicao = p.mesa;
+                            if (!mesaObj.abertaEm) mesaObj.abertaEm = p.oi || '';
+                            
+                            var prodCard = CARDAPIO.find(function(c) { return c.nome && c.nome.toLowerCase() === String(p.produto).toLowerCase(); });
+                            var precoUnit = prodCard ? prodCard.preco : (p.preco || 6.00);
 
-async function load(){
-  if(!CSV_URL){
-    data=prepare(DEMO.map(([cod,nome,raw])=>({cod,nome,raw})));
-    setStatus("demo","dados de exemplo — configure CSV_URL"); render(); return;
-  }
-  try{
-    let res;
-    try{ res = await fetch(CSV_URL, {cache:"no-store"}); }
-    catch(e){ throw new Error(location.protocol==="file:" ? "abra pelo site do GitHub, não pelo arquivo" : "sem acesso à planilha (rede bloqueada)"); }
-    if(!res.ok) throw new Error("planilha respondeu "+res.status+" — confira se a aba RANKING está publicada");
-    const txt = await res.text();
-    if(/^\s*<!DOCTYPE|<html/i.test(txt)) throw new Error("a planilha pediu login — publique a aba RANKING");
-    data = prepare(fromSheet(parseCSV(txt)));
-    if(!data.length) throw new Error("planilha carregou, mas nenhum tempo foi encontrado");
-    setStatus("", "atualizado às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}));
-    render();
-  }catch(e){
-    setStatus("err","erro: "+e.message); console.error(e);
-    if(!data.length) $("#rows").innerHTML=`<tr><td colspan="5" class="empty">Não foi possível carregar a classificação.</td></tr>`;
-  }
-}
+                            mesaObj.itens.push({
+                                idItem: k,
+                                produto: p.produto,
+                                qnt: Number(p.qnt || 1),
+                                preco: precoUnit,
+                                tipo: p.tipo || 'bar',
+                                statusPreparo: p.statusPreparo || 'pendente',
+                                linha: p.linha,
+                                mesaKey: p.mesa,
+                                obs: p.obs || ''
+                            });
+                        }
+                    }
+                }
 
-/* ---------------- formulário de inscrição ---------------- */
-const digits = s => s.replace(/\D/g,"");
-function cpfOk(c){
-  c=digits(c); if(c.length!==11 || /^(\d)\1+$/.test(c)) return false;
-  for(let t=9;t<11;t++){
-    let s=0; for(let i=0;i<t;i++) s+=+c[i]*(t+1-i);
-    if(((s*10)%11)%10 !== +c[t]) return false;
-  }
-  return true;
-}
-// máscaras
-$("#f-cpf").addEventListener("input",e=>{
-  const d=digits(e.target.value).slice(0,11);
-  e.target.value=d.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");
-});
-$("#f-wpp").addEventListener("input",e=>{
-  const d=digits(e.target.value).slice(0,11);
-  e.target.value=d.length>10?d.replace(/(\d{2})(\d{5})(\d{0,4})/,"($1) $2-$3")
-    :d.length>2?d.replace(/(\d{2})(\d{0,4})(\d{0,4})/,(m,a,b,c)=>`(${a}) ${b}${c?"-"+c:""}`):d;
-});
+                // pessoas: as que têm pedidos em aberto + as cadastradas que ainda não pediram
+                estado.pessoas = [];
+                for (var chv2 in pessoasMapa) estado.pessoas.push(pessoasMapa[chv2]);
+                estado.pessoasNovas.forEach(function(chave) {
+                    if (!pessoasMapa[chave]) {
+                        estado.pessoas.push({ id: chave, pessoa: true, vip: ehVip(chave), nome: ehVip(chave) ? chave : chave.substring(PREFIXO_PESSOA.length), status: 'ocupada', itens: [], idExibicao: chave, contadorFehamentos: 0, abertaEm: '' });
+                    }
+                });
+                estado.pessoas.sort(function(a, b) { return a.nome.localeCompare(b.nome, 'pt'); });
+                finLista.sort(function(a, b) { return ordemData(b.tchau).localeCompare(ordemData(a.tchau)); });
+                estado.finalizadas = finLista;
 
-$("#cad").addEventListener("input",e=>e.target.closest(".fld")?.classList.remove("bad"));
+                for (var mId in contagemFechamentos) {
+                    var mObj = estado.mesas.find(function(m) { return m.id == mId; });
+                    if (mObj && mObj.status === 'livre') {
+                        mObj.contadorFehamentos = contagemFechamentos[mId];
+                    }
+                }
+            } catch (err) {
+                console.log("Erro ao processar pedidos:", err);
+            }
+        }
 
-$("#cad").addEventListener("submit", async e=>{
-  e.preventDefault();
-  const f=e.target, v={
-    nome: f.nome.value.trim().replace(/\s+/g," "),
-    cpf: digits(f.cpf.value),
-    wpp: digits(f.wpp.value),
-    email: f.email.value.trim(),
-    competiu: f.competiu.value,
-    outros: f.outros.value
-  };
-  const checks={
-    "f-nome": v.nome.split(" ").length>=2,
-    "f-cpf": cpfOk(v.cpf),
-    "f-wpp": v.wpp.length>=10,
-    "f-email": /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)
-  };
-  let ok=true;
-  for(const [id,pass] of Object.entries(checks)){ $("#"+id).closest(".fld").classList.toggle("bad",!pass); ok=ok&&pass; }
-  for(const n of ["competiu","outros"]){ const fs=f.querySelector(`[name=${n}]`).closest(".fld"); fs.classList.toggle("bad",!v[n]); ok=ok&&!!v[n]; }
-  if(!ok){ f.querySelector(".bad input")?.focus(); return; }
+        function capturarValoresFormulario() {
+            try {
+                var sel = document.getElementById('select-produto');
+                var qtd = document.getElementById('input-qtd');
+                if (sel && sel.value) estado.produtoSelecionadoCache = sel.value;
+                if (qtd && qtd.value) estado.quantidadeCache = qtd.value;
+                var obsEl = document.getElementById('input-obs');
+                if (obsEl) estado.obsCache = obsEl.value;
+            } catch (err) {}
+        }
 
-  if(Object.values(ENTRY).some(x=>/^entry\.0+\d$/.test(x))){
-    alert("Formulário ainda não configurado: os códigos das perguntas (ENTRY) no index.html precisam ser preenchidos. Nada foi enviado.");
-    return;
-  }
+        function marcarConexao(ok) {
+            var el = document.getElementById('sync-indicator');
+            if (!el) return;
+            el.textContent = ok ? 'Conectado' : 'Desconectado';
+            if (ok) el.classList.remove('off'); else el.classList.add('off');
+        }
+        function sincronizar() {
+            capturarValoresFormulario();
+            var meuSeq = (estado.seqReq = (estado.seqReq || 0) + 1);
+            fetch(API_URL)
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    // resposta mais antiga que outra já aplicada (chegou fora de ordem): descarta, senão o status "volta"
+                    if (meuSeq < (estado.seqAplicada || 0)) return;
+                    estado.seqAplicada = meuSeq;
+                    marcarConexao(!!data);
+                    if (data) {
+                        if (data.produtos && data.produtos.length > 0) {
+                            CARDAPIO = data.produtos;
+                        }
+                        if (data.frequentes) estado.frequentes = data.frequentes;
+                        if (data.clientes) estado.clientes = data.clientes;
+                        if (data.usuario) { estado.usuario = data.usuario; estado.versao = data.versao || 'antiga'; atualizarUsuario(); }
+                        if (data.pedidos) {
+                            estado.pedidosGlobais = data.pedidos;
+                            // pedidos enviados que o servidor ainda não gravou continuam na tela
+                            estado.pendentes = estado.pendentes.filter(function(pd) {
+                                if (Date.now() - pd.t > 60000) return false;
+                                var n = data.pedidos.filter(function(x) { return x.status !== 'fechado' && String(x.mesa) === String(pd.pedido.mesa) && x.produto === pd.pedido.produto; }).length;
+                                return n < pd.base + 1;
+                            });
+                            estado.pendentes.forEach(function(pd) { data.pedidos.push(pd.pedido); });
+                            // mudanças de status feitas aqui: ficam na tela até a planilha confirmar (e são reenviadas)
+                            for (var kk = 0; kk < data.pedidos.length; kk++) {
+                                var chv = chavePedido(data.pedidos, kk);
+                                var ov = estado.overrides[chv];
+                                if (!ov) continue;
+                                var pk = data.pedidos[kk];
+                                if (pk.statusPreparo === ov.status) { if (!ov.ok) ov.ok = Date.now(); }
+                                // depois de confirmado, a mudança continua valendo por 25 s (protege contra respostas atrasadas)
+                                if ((ov.ok && Date.now() - ov.ok > 25000) || Date.now() - ov.t > 600000) {
+                                    delete estado.overrides[chv];
+                                } else {
+                                    pk.statusPreparo = ov.status;
+                                    if (pk.linha) ov.linha = pk.linha;
+                                    if (!ov.ok && !ov.enviando && Date.now() - ov.ult > 6000) enviarStatus(chv);
+                                }
+                            }
+                            processarPedidos();
+                        }
+                        renderizar();
+                    }
+                })
+                .catch(function(e) { 
+                    console.log("Aviso de rede (usando dados locais):", e); marcarConexao(false);
+                    renderizar(); 
+                });
+        }
 
-  const body=new URLSearchParams();
-  for(const k of Object.keys(ENTRY)) if(v[k]) body.append(ENTRY[k], v[k]);
+        function mudarAba(aba) {
+            estado.abaAtiva = aba;
+            if (aba === 'caixa') {
+                estado.mesaSelecionadaId = null;
+            }
+            
+            var btnCaixa = document.getElementById('btn-aba-caixa');
+            var btnCozinha = document.getElementById('btn-aba-cozinha');
+            var btnBar = document.getElementById('btn-aba-bar');
+            var btnAbertas = document.getElementById('btn-aba-abertas');
 
-  const btn=f.querySelector(".btn"); btn.disabled=true; btn.textContent="Enviando…";
-  try{
-    // O Google não devolve resposta legível para outros sites (no-cors),
-    // então o envio é considerado ok se não houver erro de rede.
-    await fetch(`https://docs.google.com/forms/d/e/${FORM_ID}/formResponse`,{method:"POST",mode:"no-cors",body});
-    f.hidden=true; $("#done").hidden=false; f.reset();
-  }catch(err){
-    alert("Não foi possível enviar. Verifique sua conexão e tente de novo.");
-  }finally{ btn.disabled=false; btn.textContent="Confirmar inscrição"; }
-});
-$("#again").addEventListener("click",()=>{ $("#done").hidden=true; $("#cad").hidden=false; });
+            if (btnCaixa) btnCaixa.className = "btn-tab " + (aba === 'caixa' ? 'active-caixa' : '');
+            if (btnCozinha) btnCozinha.className = "btn-tab " + (aba === 'cozinha' ? 'active-cozinha' : '');
+            if (btnBar) btnBar.className = "btn-tab " + (aba === 'bar' ? 'active-bar' : '');
+            if (btnAbertas) btnAbertas.className = "btn-tab " + (aba === 'abertas' ? 'active-abertas' : '');
+            var btnFin = document.getElementById('btn-aba-finalizadas');
+            if (btnFin) btnFin.className = "btn-tab " + (aba === 'finalizadas' ? 'active-abertas' : '');
+            
+            renderizar();
+        }
 
-$("#q").addEventListener("input", render);
-load();
-setInterval(load, REFRESH_SECONDS*1000);
-</script>
+        function selecionarMesa(id) {
+            var alvoSel = acharMesa(id);
+            estado.mesaSelecionadaId = alvoSel ? alvoSel.id : id;
+            if (CARDAPIO.length > 0 && !estado.produtoSelecionadoCache) {
+                estado.produtoSelecionadoCache = CARDAPIO[0].nome;
+            }
+            estado.quantidadeCache = 1;
+            renderizar();
+        }
+
+        // Clientes recorrentes (lista da aba "Clientes" da planilha): sugestões ao digitar o começo do nome
+        function semAcento(t) { return String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim(); }
+        function filtrarClientes(txt) {
+            var q = semAcento(txt), ini = [], meio = [];
+            estado.clientes.forEach(function(c) {
+                var n = semAcento(c.nome);
+                if (!q) ini.push(c);
+                else if (n.indexOf(q) === 0) ini.push(c);
+                else if (n.indexOf(q) > 0) meio.push(c);
+            });
+            function porUso(x, y) { return (Number(y.n) || 0) - (Number(x.n) || 0); }
+            ini.sort(porUso); meio.sort(porUso);
+            return ini.concat(meio).slice(0, 8);
+        }
+        function htmlSugestoes(txt) {
+            // sem texto digitado: não mostra nada; digitando: lista de nomes (começam com o texto primeiro, mais usados antes)
+            if (!limparNome(txt)) return '';
+            var lista = filtrarClientes(txt);
+            if (!lista.length) return '<div style="font-size:0.8rem; color:#555;">Nenhum cliente com esse nome. Toque em Adicionar para criar.</div>';
+            return '<div style="border:2px solid #000; border-radius:0.5rem; overflow:hidden;">' + lista.map(function(c, i) {
+                return '<button type="button" data-nome="' + esc(c.nome) + '" onclick="escolherPessoa(this.getAttribute(\'data-nome\'))" style="display:block; width:100%; text-align:left; background:#fff; border:0; ' + (i ? 'border-top:1px solid #ccc; ' : '') + 'padding:0.5rem 0.75rem; border-radius:0; font-size:1rem; color:#000;">' + esc(c.nome) + (c.n ? ' <small style="color:#666;">(' + c.n + 'x)</small>' : '') + '</button>';
+            }).join('') + '</div>';
+        }
+        function sugerirPessoas(txt) {
+            var box = document.getElementById('sugestoes-pessoa');
+            if (box) box.innerHTML = htmlSugestoes(txt);
+        }
+        function novaPessoa() {
+            fecharJanelaPessoa();
+            var el = document.createElement('div');
+            el.id = 'janela-pessoa';
+            el.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:50; padding:1rem;';
+            el.innerHTML = '<div style="background:#fff; border:3px solid #000; border-radius:0.75rem; padding:1rem; width:100%; max-width:26rem; color:#000;">' +
+                '<h3 style="margin-bottom:0.75rem;">+ Nova Pessoa</h3>' +
+                '<label style="font-size:0.8rem;">Nome (comece a digitar para ver os clientes salvos; VIP = mensalista):</label>' +
+                '<input type="text" id="input-nova-pessoa" maxlength="40" autocomplete="off" style="width:100%; margin:0.25rem 0 0.5rem;" oninput="sugerirPessoas(this.value)" onkeydown="if(event.key===\'Enter\') escolherPessoa(this.value)">' +
+                '<div id="sugestoes-pessoa" style="margin-bottom:0.75rem; max-height:40vh; overflow:auto;">' + htmlSugestoes('') + '</div>' +
+                '<div style="display:flex; gap:0.5rem; justify-content:flex-end;">' +
+                    '<button type="button" onclick="fecharJanelaPessoa()" style="background:#fff; border:2px solid #000;">Cancelar</button>' +
+                    '<button type="button" onclick="escolherPessoa(document.getElementById(\'input-nova-pessoa\').value)" style="background:#facc15; border:2px solid #000;">Adicionar</button>' +
+                '</div></div>';
+            document.body.appendChild(el);
+            var inp = document.getElementById('input-nova-pessoa');
+            if (inp && inp.focus) inp.focus();
+        }
+        function fecharJanelaPessoa() {
+            var el = document.getElementById('janela-pessoa');
+            if (el && el.parentNode) el.parentNode.removeChild(el);
+        }
+        function escolherPessoa(valor) {
+            var entrada = limparNome(valor);
+            if (!entrada) return;
+            fecharJanelaPessoa();
+            criarPessoa(entrada);
+        }
+        function criarPessoa(entrada) {
+            var chave;
+            var up = entrada.toUpperCase();
+            if (up === 'VIP') {
+                // cliente VIP (mensalista): pede o nome e grava como VIP-NOME
+                var nomeVip = limparNome(prompt('Nome do cliente VIP:')).toUpperCase();
+                if (!nomeVip) return;
+                chave = 'VIP-' + nomeVip;
+            } else if (up.indexOf('VIP-') === 0 && up.length > 4) {
+                chave = up;
+            } else {
+                chave = PREFIXO_PESSOA + entrada;
+            }
+            var chaveMin = chave.toLowerCase();
+            var existe = estado.pessoasNovas.some(function(n) { return n.toLowerCase() === chaveMin; }) ||
+                estado.pessoas.some(function(p) { return p.id.toLowerCase() === chaveMin; });
+            if (!existe) estado.pessoasNovas.push(chave);
+            processarPedidos();
+            var alvo = estado.pessoas.find(function(p) { return p.id.toLowerCase() === chaveMin; });
+            mudarAba('caixa');
+            if (alvo) selecionarMesa(alvo.id);
+        }
+        function abrirNaCaixa(id) { mudarAba('caixa'); selecionarMesa(id); }
+
+        function adicionarItem() {
+            capturarValoresFormulario();
+            if (!estado.mesaSelecionadaId) return;
+            
+            var prod = CARDAPIO.find(function(p) { return p.nome == estado.produtoSelecionadoCache; });
+            if (!prod || estoqueDisponivel(prod.nome) <= 0) {
+                alert('Selecione um produto disponível.');
+                return;
+            }
+
+            var qtd = Number(estado.quantidadeCache) || 1;
+            var disponivel = estoqueDisponivel(prod.nome);
+            if (disponivel <= 0) { alert(prod.nome + ' está esgotado.'); return; }
+            if (qtd > disponivel) { alert('Estoque insuficiente de ' + prod.nome + ': restam ' + disponivel + '.'); return; }
+            var mesaObj = acharMesa(estado.mesaSelecionadaId);
+            if (!mesaObj) return;
+            var idMesaFinal = chaveMesa(mesaObj);
+
+            var novo = { 
+                mesa: idMesaFinal, 
+                produto: prod.nome, 
+                qnt: qtd,
+                preco: prod.preco,
+                tipo: prod.tipo || 'bar',
+                status: 'pendente',
+                statusPreparo: 'pendente',
+                obs: limparObs(estado.obsCache)
+            };
+
+            var base = estado.pedidosGlobais.filter(function(x) { return x.status !== 'fechado' && String(x.mesa) === String(novo.mesa) && x.produto === novo.produto; }).length;
+            estado.pendentes.push({ pedido: novo, base: base, t: Date.now() });
+            estado.pedidosGlobais.push(novo);
+
+            // volta o formulário ao padrão: primeiro produto da lista e quantidade 1
+            estado.produtoSelecionadoCache = primeiroDisponivel();
+            estado.quantidadeCache = 1;
+            estado.obsCache = '';
+            var obsForm = document.getElementById('input-obs');
+            if (obsForm) obsForm.value = '';
+            var selForm = document.getElementById('select-produto');
+            var qtdForm = document.getElementById('input-qtd');
+            if (selForm) { selForm.selectedIndex = 0; if (estado.produtoSelecionadoCache) selForm.value = estado.produtoSelecionadoCache; }
+            if (qtdForm) qtdForm.value = 1;
+
+            processarPedidos();
+            renderizar();
+
+            var urlPedido = API_URL + '?acao=novo_pedido&mesa=' + encodeURIComponent(novo.mesa) +
+                '&produto=' + encodeURIComponent(novo.produto) + '&qnt=' + encodeURIComponent(novo.qnt) +
+                (novo.obs ? '&obs=' + encodeURIComponent(novo.obs) : '');
+            fetch(urlPedido, { keepalive: true })
+                .then(function(res) { return res.json(); })
+                .then(function(r) {
+                    if (r && r.result === 'success') {
+                        setTimeout(sincronizar, 500);
+                    } else if (r && r.error) {
+                        desfazerPedido(novo, r.error);
+                    } else {
+                        // Apps Script antigo (não conhece novo_pedido): envia pelo método antigo
+                        fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
+                            keepalive: true, body: JSON.stringify(novo) })
+                            .then(function() { setTimeout(sincronizar, 1000); });
+                    }
+                })
+                .catch(function() { setTimeout(sincronizar, 1000); });
+        }
+
+        var clickTimers = {};
+        function lidarComCliqueCard(idItem) {
+            if (clickTimers[idItem]) {
+                clearTimeout(clickTimers[idItem]);
+                clickTimers[idItem] = null;
+                mudarEstadoPorId(idItem, 'pronto');
+            } else {
+                clickTimers[idItem] = setTimeout(function() {
+                    clickTimers[idItem] = null;
+                    var p = estado.pedidosGlobais[idItem];
+                    if (p && p.status !== 'fechado') {
+                        var atual = p.statusPreparo || 'pendente';
+                        mudarEstadoPorId(idItem, atual === 'pendente' ? 'preparando' : 'pendente');
+                    }
+                }, 250);
+            }
+        }
+
+        function mudarEstadoPorId(idItem, novoEstado) {
+            var p = estado.pedidosGlobais[idItem];
+            if (p && p.status !== 'fechado') {
+                p.statusPreparo = novoEstado;
+                var chv = chavePedido(estado.pedidosGlobais, idItem);
+                estado.overrides[chv] = { status: novoEstado, t: Date.now(), ult: 0, enviando: false, mesa: p.mesa, produto: p.produto, linha: p.linha };
+                enviarStatus(chv);
+                processarPedidos();
+                renderizar();
+            }
+        }
+        // Envia o status e confere a resposta. A mudança só deixa de ser "reservada" na tela quando
+        // a planilha realmente mostra o novo status; enquanto isso, reenvia a cada sincronização.
+        function enviarStatus(chv) {
+            var ov = estado.overrides[chv];
+            if (!ov || ov.enviando || !ov.linha) return;
+            ov.enviando = true; ov.ult = Date.now();
+            var qs = '?acao=status_preparo&linha=' + encodeURIComponent(ov.linha) + '&mesa=' + encodeURIComponent(ov.mesa) +
+                '&produto=' + encodeURIComponent(ov.produto) + '&status=' + encodeURIComponent(ov.status);
+            fetch(API_URL + qs, { keepalive: true })
+                .then(function(res) { return res.json(); })
+                .then(function(r) {
+                    ov.enviando = false;
+                    if (!(r && r.result === 'success') && !(r && r.error)) {
+                        // script antigo (não conhece a ação por GET): usa o envio de antes
+                        fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
+                            body: JSON.stringify({ acao: 'status_preparo', linha: ov.linha, mesa: ov.mesa, produto: ov.produto, statusPreparo: ov.status }) });
+                    }
+                })
+                .catch(function() { ov.enviando = false; });
+        }
+
+        var cancelando = false;
+        function cancelarItem(idItem, qtdRemover) {
+            if (cancelando) return;
+            var p = estado.pedidosGlobais[idItem];
+            if (!p || p.status === 'fechado') return;
+            if (!p.linha) { alert('Esse pedido ainda está sendo gravado. Aguarde alguns segundos e tente de novo.'); return; }
+            var q = Math.min(Number(qtdRemover) || 1, Number(p.qnt) || 1);
+            var msg = q >= p.qnt
+                ? 'Cancelar ' + p.qnt + 'x ' + p.produto + '?'
+                : 'Remover ' + q + ' un de ' + p.produto + '? (ficam ' + (p.qnt - q) + ')';
+            if (!confirm(msg + '\nO estoque será devolvido.')) return;
+            cancelando = true;
+            fetch(API_URL + '?acao=cancelar_item&linha=' + encodeURIComponent(p.linha) + '&mesa=' + encodeURIComponent(p.mesa) +
+                  '&produto=' + encodeURIComponent(p.produto) + '&qnt=' + encodeURIComponent(q))
+                .then(function(res) { return res.json(); })
+                .then(function(r) {
+                    cancelando = false;
+                    if (r && r.result === 'success') sincronizar();
+                    else if (r && r.error) { alert(r.error); sincronizar(); }
+                    else alert('Não foi possível cancelar. Confira se a versão nova do Codigo.gs está implantada.');
+                })
+                .catch(function() { cancelando = false; alert('Falha de conexão. Tente novamente.'); });
+        }
+
+        function encerrarTodas() {
+            if (!exigirAdmin()) return;
+            var abertas = todasMesas().filter(function(m) { return m.status === 'ocupada' && m.itens.length > 0 && !m.vip; });
+            if (abertas.length === 0) { alert('Não há mesas abertas.'); return; }
+            if (!confirm('Encerrar ' + abertas.length + ' comanda(s) em aberto, total ' + brl(abertas.reduce(function(a, m) { return a + totalMesaObj(m); }, 0)) + '?')) return;
+            var senha = prompt('Digite a senha para encerrar todas as mesas:');
+            if (senha === null) return;
+            fetch(API_URL + '?acao=encerrar_todas&senha=' + encodeURIComponent(senha))
+                .then(function(res) { return res.json(); })
+                .then(function(r) {
+                    if (r && r.result === 'success') {
+                        estado.pessoasNovas = [];
+                        estado.mesaSelecionadaId = null;
+                        alert(r.mesas + ' comanda(s) encerrada(s). Valor que estava em aberto: ' + (r.totalTexto || ''));
+                        sincronizar();
+                    } else if (r && r.error) alert(r.error);
+                    else alert('Não foi possível encerrar. Confira se a versão nova do Codigo.gs está implantada.');
+                })
+                .catch(function() { alert('Falha de conexão. Tente novamente.'); });
+        }
+
+        var FORMAS_PAGAMENTO = ['Débito', 'Crédito', 'PIX', 'Dinheiro'];
+        // Passo 1: abre a janela de fechamento (escolha da forma de pagamento + imprimir)
+        function fecharMesa(id) {
+            var mesaObj = acharMesa(id);
+            if (!mesaObj) return;
+            estado.fechamento = { id: mesaObj.id, forma: '' };
+            fecharJanelaFechamento();
+            var el = document.createElement('div');
+            el.id = 'janela-fechamento';
+            el.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:60; padding:1rem;';
+            document.body.appendChild(el);
+            desenharFechamento();
+        }
+        function desenharFechamento() {
+            var el = document.getElementById('janela-fechamento');
+            var f = estado.fechamento;
+            if (!el || !f) return;
+            var m = acharMesa(f.id);
+            if (!m) { fecharJanelaFechamento(); return; }
+            var linhas = m.itens.map(function(it) {
+                return '<div style="display:flex; justify-content:space-between; gap:0.5rem; font-size:0.85rem;"><span>' + it.qnt + 'x ' + esc(it.produto) + '</span><span>' + brl(it.qnt * it.preco) + '</span></div>';
+            }).join('') || '<div style="font-size:0.85rem;">Sem itens lançados.</div>';
+            var precisaForma = m.itens.length > 0;
+            var botoes = '';
+            if (precisaForma) {
+                botoes = '<div style="font-size:0.85rem; margin:0.75rem 0 0.25rem;"><b>Forma de pagamento:</b> <span style="color:#b91c1c;">' + (f.forma ? '' : '(escolha uma)') + '</span></div><div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">' +
+                    FORMAS_PAGAMENTO.map(function(fp) {
+                        var sel = f.forma === fp;
+                        return '<button type="button" data-forma="' + esc(fp) + '" onclick="escolherForma(this.getAttribute(\'data-forma\'))" style="border:2px solid #000; padding:0.6rem; font-weight:bold; background:' + (sel ? '#4ade80' : '#fff') + ';">' + (sel ? '✔ ' : '') + esc(fp) + '</button>';
+                    }).join('') + '</div>';
+            }
+            el.innerHTML = '<div style="background:#fff; border:3px solid #000; border-radius:0.75rem; padding:1rem; width:100%; max-width:26rem; color:#000; max-height:90vh; overflow:auto;">' +
+                '<h3 style="margin-bottom:0.5rem;">Fechar ' + esc(nomeMesa(m)) + '</h3>' + (m.vip ? '<div style="font-size:0.75rem; margin-bottom:0.5rem;">⭐ Conta VIP (mensal): vai para a aba VIP e não entra no caixa do dia.</div>' : '') +
+                '<div style="display:flex; flex-direction:column; gap:0.2rem; margin-bottom:0.5rem;">' + linhas + '</div>' +
+                '<div style="display:flex; justify-content:space-between; font-weight:bold; border-top:1px dashed #000; padding-top:0.4rem;"><span>TOTAL</span><span>' + brl(totalMesaObj(m)) + '</span></div>' +
+                botoes +
+                '<div style="display:flex; gap:0.5rem; margin-top:1rem; flex-wrap:wrap;">' +
+                    '<button type="button" onclick="imprimirFechamento()" style="background:#fff; border:2px solid #000; flex:1;">🖨️ Imprimir comanda</button>' +
+                    '<button type="button" onclick="fecharJanelaFechamento()" style="background:#fff; border:2px solid #000;">Cancelar</button>' +
+                    '<button type="button" onclick="confirmarFechamento()" style="background:#f87171; border:2px solid #000; flex:1;">' + 'Confirmar fechamento' + '</button>' +
+                '</div></div>';
+        }
+        function escolherForma(fp) { if (estado.fechamento) { estado.fechamento.forma = fp; desenharFechamento(); } }
+        function fecharJanelaFechamento() {
+            var el = document.getElementById('janela-fechamento');
+            if (el && el.parentNode) el.parentNode.removeChild(el);
+        }
+        function reciboDaMesa(m, forma, tipo) {
+            var c = { mesa: String(m.pessoa ? m.id : (m.idExibicao || m.id)), tchau: agoraBR(), abertura: m.abertaEm || '', itens: [], total: 0, forma: forma || '' };
+            m.itens.forEach(function(it) { c.itens.push({ produto: it.produto, qnt: it.qnt, preco: it.preco, obs: it.obs || '', pedidoEm: '' }); c.total += it.qnt * it.preco; });
+            return c;
+        }
+        function imprimirFechamento() {
+            var f = estado.fechamento, m = f && acharMesa(f.id);
+            if (!m || m.itens.length === 0) { alert('Nenhum item lançado para imprimir.'); return; }
+            imprimirHtml(htmlRecibo(reciboDaMesa(m, f.forma), f.forma ? 'FINAL' : 'CONFERENCIA'));
+        }
+        // Passo 2: confirma (exige a forma de pagamento) e fecha
+        function confirmarFechamento() {
+            var f = estado.fechamento, mesaObj = f && acharMesa(f.id);
+            if (!mesaObj) { fecharJanelaFechamento(); return; }
+            var precisaForma = mesaObj.itens.length > 0;
+            if (precisaForma && !f.forma) { alert('Selecione a forma de pagamento: Débito, Crédito, PIX ou Dinheiro.'); return; }
+            var forma = precisaForma ? f.forma : '';
+            fecharJanelaFechamento();
+            estado.fechamento = null;
+            var idAlvo = mesaObj.pessoa ? mesaObj.id : (mesaObj.idExibicao || mesaObj.id);
+            if (mesaObj.pessoa) {
+                estado.pessoasNovas = estado.pessoasNovas.filter(function(n) { return n !== mesaObj.id; });
+            }
+            // recibo final (impressão automática ao fechar, se marcada)
+            if (lerConfig('autoimp', '0') === '1' && mesaObj.itens.length > 0) {
+                imprimirHtml(htmlRecibo(reciboDaMesa(mesaObj, forma), 'FINAL'));
+            }
+
+            var aposFechar = function() {
+                setTimeout(function() {
+                    estado.mesaSelecionadaId = null;
+                    sincronizar();
+                }, 800);
+            };
+            // GET primeiro (o servidor novo também gera o PDF no Drive); se o script for antigo, usa o POST de antes
+            fetch(API_URL + '?acao=fechar_mesa&mesa=' + encodeURIComponent(idAlvo) + '&forma=' + encodeURIComponent(forma))
+                .then(function(res) { return res.json(); })
+                .then(function(r) {
+                    if (r && r.result === 'success') { aposFechar(); return; }
+                    return fecharMesaPost(idAlvo).then(aposFechar);
+                })
+                .catch(function() { fecharMesaPost(idAlvo).then(aposFechar); });
+        }
+        function fecharMesaPost(idAlvo) {
+            return fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ acao: 'fechar_mesa', mesa: idAlvo })
+            });
+        }
+
+        // ---------- impressão térmica / comandas finalizadas ----------
+        function lerConfig(nome, padrao) { try { var v = localStorage.getItem('lcb_' + nome); return v === null ? padrao : v; } catch (e) { return padrao; } }
+        function gravarConfig(nome, v) { try { localStorage.setItem('lcb_' + nome, v); } catch (e) {} }
+        function agoraBR() {
+            var d = new Date(), z = function(n) { return (n < 10 ? '0' : '') + n; };
+            return z(d.getDate()) + '/' + z(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + z(d.getHours()) + ':' + z(d.getMinutes()) + ':' + z(d.getSeconds());
+        }
+        function ordemData(t) { var m = String(t).match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})/); return m ? m[3] + m[2] + m[1] + m[4] + m[5] + m[6] : '0'; }
+        function soHora(t) { var m = String(t).match(/\d{2}:\d{2}(:\d{2})?/); return m ? m[0] : ''; }
+        function rotuloChave(k) {
+            k = String(k);
+            if (ehPessoa(k)) return k.substring(PREFIXO_PESSOA.length);
+            if (ehVip(k)) return k;
+            return 'Mesa ' + k;
+        }
+        function mudarPapel(v) { gravarConfig('papel', v); }
+        function mudarAutoImp(el) { gravarConfig('autoimp', el.checked ? '1' : '0'); }
+
+        // tipo: 'FINAL' (comanda fechada) ou 'CONFERENCIA' (parcial, ainda aberta)
+        function htmlRecibo(c, tipo) {
+            var larg = lerConfig('papel', '80') === '58' ? '48mm' : '72mm';
+            var linhas = '';
+            c.itens.forEach(function(it) {
+                linhas += '<div class="r"><span>' + it.qnt + 'x ' + esc(it.produto) + '</span><span>' + brl(it.qnt * it.preco) + '</span></div>';
+                var h = soHora(it.pedidoEm);
+                if (h) linhas += '<div class="s">pedido às ' + esc(h) + '</div>';
+                if (it.obs) linhas += '<div class="s">* ' + esc(it.obs) + '</div>';
+            });
+            var dataDia = (String(c.tchau || agoraBR()).match(/\d{2}\/\d{2}\/\d{4}/) || [''])[0];
+            var fech = tipo === 'FINAL' ? '<div>Fechamento: ' + esc(soHora(c.tchau)) + '</div>' + (c.forma ? '<div>Pagamento: <b>' + esc(c.forma) + '</b></div>' : '') : '<div><b>CONFERÊNCIA - conta em aberto</b></div>';
+            return '<!doctype html><html><head><meta charset="utf-8"><title>Comanda</title><style>' +
+                '@page{size:' + (larg === '48mm' ? '58mm' : '80mm') + ' auto;margin:0}' +
+                'body{margin:0;padding:2mm;width:' + larg + ';font-family:"Courier New",monospace;font-size:12px;color:#000}' +
+                '.c{text-align:center}.r{display:flex;justify-content:space-between;gap:4px}.s{font-size:10px;padding-left:8px}' +
+                'hr{border:0;border-top:1px dashed #000;margin:4px 0}.t{font-size:15px;font-weight:bold}</style></head><body>' +
+                '<div class="c t">LUGAR COMUM BAR</div><div class="c"><b>' + esc(rotuloChave(c.mesa)) + '</b></div><hr>' +
+                '<div>Data: ' + esc(dataDia) + '</div>' +
+                '<div>Abertura: ' + esc(soHora(c.abertura)) + '</div>' + fech + '<hr>' +
+                linhas + '<hr><div class="r t"><span>TOTAL</span><span>' + brl(c.total) + '</span></div><hr>' +
+                '<div class="c">Obrigado e volte sempre!</div><div style="height:8mm"></div></body></html>';
+        }
+        function imprimirHtml(html) {
+            var f = document.createElement('iframe');
+            f.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+            document.body.appendChild(f);
+            var d = f.contentWindow.document;
+            d.open(); d.write(html); d.close();
+            setTimeout(function() {
+                try { f.contentWindow.focus(); f.contentWindow.print(); }
+                catch (e) { alert('Não foi possível abrir a impressão neste navegador.'); }
+                setTimeout(function() { if (f.parentNode) f.parentNode.removeChild(f); }, 8000);
+            }, 300);
+        }
+        function imprimirAberta(id) {
+            var m = acharMesa(id);
+            if (!m || m.itens.length === 0) { alert('Nenhum item lançado para imprimir.'); return; }
+            imprimirHtml(htmlRecibo(reciboDaMesa(m, ''), 'CONFERENCIA'));
+        }
+        function acharFinalizada(k) { return estado.finalizadas.find(function(f) { return f.k === k; }); }
+        function imprimirFinalizada(k) {
+            var c = acharFinalizada(k);
+            if (c) imprimirHtml(htmlRecibo(c, 'FINAL'));
+        }
+        function pdfFinalizada(k) {
+            var c = acharFinalizada(k);
+            if (!c) return;
+            var w = window.open('about:blank', '_blank');
+            fetch(API_URL + '?acao=gerar_pdf&mesa=' + encodeURIComponent(c.mesa) + '&tchau=' + encodeURIComponent(c.tchau))
+                .then(function(res) { return res.json(); })
+                .then(function(r) {
+                    if (r && r.result === 'success' && r.pdf) {
+                        if (w) w.location.href = r.pdf; else window.open(r.pdf, '_blank');
+                    } else {
+                        if (w) w.close();
+                        alert((r && r.error) || 'Não foi possível gerar o PDF. Confira se o Codigo.gs novo está implantado e se o Drive foi autorizado.');
+                    }
+                })
+                .catch(function() { if (w) w.close(); alert('Falha de conexão ao gerar o PDF.'); });
+        }
+
+        function finalizarDia() {
+            if (!exigirAdmin()) return;
+            var mesasOcupadas = todasMesas().filter(function(m) { return m.status === 'ocupada' && m.itens.length > 0 && !m.vip; });
+            if (mesasOcupadas.length > 0) {
+                alert("Não é possível finalizar o dia! Ainda existem mesas abertas.\nVá na aba 📋 Abertas e use \"Encerrar todas\" (senha) se for o caso.");
+                return;
+            }
+            var senha = prompt("Digite a senha para finalizar o dia:");
+            if (senha === null) return;
+
+            fetch(API_URL + '?acao=finalizar_dia&senha=' + encodeURIComponent(senha))
+                .then(function(res) { return res.json(); })
+                .then(function(r) {
+                    if (r && r.result === 'success') {
+                        estado.pendentes = [];
+                        estado.overrides = {};
+                        estado.pedidosGlobais = [];
+                        estado.mesaSelecionadaId = null;
+                        processarPedidos();
+                        renderizar();
+                        alert("Dia finalizado!\nTotal de vendas: " + (r.totalTexto || '') +
+                            "\nBebidas: " + (r.bebidasTexto || '') + "\nComidas: " + (r.comidasTexto || '') +
+                            "\nMesas que ficaram em aberto: " + (r.emAbertoTexto || '') + " (" + (r.nomesAbertas || 'nenhuma') + ")" +
+                            "\n\nAs mesas voltaram ao início (Mesa 1, Mesa 2, ...).");
+                        estado.pessoasNovas = [];
+                        sincronizar();
+                    } else {
+                        if (r && r.error) alert(r.error);
+                        else if (r && r.pedidos) alert("O Apps Script ainda está na versão antiga. Implante a nova versão do Codigo.gs (Implantar > Gerenciar implantações > Editar > Nova versão).");
+                        else alert("Não foi possível finalizar o dia.");
+                    }
+                })
+                .catch(function() {
+                    alert("Falha de conexão. Verifique a internet e tente novamente.");
+                });
+        }
+
+        // Painel lateral de uma comanda: lançar produtos, itens, imprimir e fechar (usado no Caixa e em Abertas)
+        function htmlPainelMesa(mesaSel) {
+            var listaHtml = '';
+            var valorTotalComanda = 0;
+
+            if (mesaSel.itens.length === 0) {
+                listaHtml = '<p style="text-align: center; padding: 1rem;">Nenhum item lançado.</p>';
+            } else {
+                for (var j = 0; j < mesaSel.itens.length; j++) {
+                    var item = mesaSel.itens[j];
+                    var stPreparo = item.statusPreparo || 'pendente';
+                    var subtotal = item.qnt * item.preco;
+                    valorTotalComanda += subtotal;
+
+                    var botoesCancel = (item.qnt > 1
+                        ? '<button onclick="event.stopPropagation(); cancelarItem(' + item.idItem + ', 1)" title="Remover 1 unidade" style="background:#fff; border:2px solid #000; padding:0.2rem 0.5rem; font-size:0.75rem;">−1</button>'
+                        : '') +
+                        '<button onclick="event.stopPropagation(); cancelarItem(' + item.idItem + ', ' + item.qnt + ')" title="Cancelar o item" style="background:#fff; border:2px solid #000; padding:0.2rem 0.5rem; font-size:0.75rem;">✕ Cancelar</button>';
+
+                    listaHtml += '<div class="item-row">' +
+                        '<div><strong>' + item.qnt + 'x ' + esc(item.produto) + '</strong><br>' +
+                        '<small>Preço: ' + brl(item.preco) + ' | Subtotal: ' + brl(subtotal) + '</small>' + htmlObs(item.obs, false) + '<br>' +
+                        '<span class="badge" style="background:' + corStatus(stPreparo) + '; margin-top:2px; display:inline-block;">Status: ' + stPreparo.toUpperCase() + '</span></div>' +
+                        '<div style="display:flex; flex-direction:column; gap:0.25rem;">' + botoesCancel + '</div>' +
+                    '</div>';
+                }
+            }
+
+            var opcoesHtml = '';
+            for (var c = 0; c < CARDAPIO.length; c++) {
+                var pItem = CARDAPIO[c];
+                var esgotado = estoqueDisponivel(pItem.nome) <= 0;
+                if (esgotado) continue; // estoque 0 na planilha: não aparece no site
+                var selecionadoAttr = (pItem.nome === estado.produtoSelecionadoCache) ? 'selected' : '';
+                var disp = estoqueDisponivel(pItem.nome);
+                opcoesHtml += '<option value="' + esc(pItem.nome) + '" ' + selecionadoAttr + (esgotado ? ' disabled' : '') + '>' + esc(pItem.nome) + ' - ' + brl(pItem.preco) + (esgotado ? ' - ESGOTADO' : ' - ' + disp + ' un') + '</option>';
+            }
+
+
+            if (!opcoesHtml) opcoesHtml = '<option value="" disabled selected>Nenhum produto disponível</option>';
+
+            return '<div class="painel-lateral">' +
+                '<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #991b1b; padding-bottom: 0.75rem; margin-bottom: 1rem;">' +
+                    '<h3>' + esc(nomeMesa(mesaSel)) + '</h3>' +
+                    '<div style="display:flex; gap:0.4rem;"><button data-id="' + esc(mesaSel.id) + '" onclick="imprimirAberta(this.getAttribute(\'data-id\'))" title="Imprimir conferência na térmica" style="background:#fff; border: 2px solid #000; padding: 0.25rem 0.5rem; border-radius: 0.5rem;">🖨️</button>' +
+                    '<button data-id="' + esc(mesaSel.id) + '" onclick="fecharMesa(this.getAttribute(\'data-id\'))" style="background: #f87171; border: 2px solid #000; padding: 0.25rem 0.5rem; border-radius: 0.5rem;">' + 'Fechar Conta' + '</button></div>' +
+                '</div>' +
+                (mesaSel.vip
+                    ? '<div style="margin-bottom: 1rem; font-size: 0.875rem; font-weight: normal;">Total: ' + brl(valorTotalComanda) + '</div>'
+                    : '<div style="background: #facc15; border: 2px solid #000; padding: 0.5rem; border-radius: 0.5rem; margin-bottom: 1rem; text-align: center;">' +
+                        '<strong style="font-size: 1rem;">Total Comanda: ' + brl(valorTotalComanda) + '</strong>' +
+                      '</div>') +
+                '<div class="form-grupo">' +
+                    '<label style="font-size: 0.75rem;">SELECIONAR PRODUTO</label>' +
+                    '<select id="select-produto">' + opcoesHtml + '</select>' +
+                    '<div style="margin-top: 0.5rem;"><label style="font-size:0.65rem;">Qtd Solicitada:</label><input type="number" id="input-qtd" value="' + estado.quantidadeCache + '" min="1" style="text-align: center;" oninput="estado.quantidadeCache = this.value"></div>' +
+                    '<div style="margin-top: 0.5rem;"><label style="font-size:0.65rem;">Observação (ex.: sem cebola, sem gelo, sem álcool):</label><input type="text" id="input-obs" maxlength="60" placeholder="Opcional" value="' + esc(estado.obsCache) + '" oninput="estado.obsCache = this.value"></div>' +
+                    '<button onclick="adicionarItem()" class="btn-lancar" style="margin-top:0.5rem;">Lançar Pedido</button>' +
+                '</div>' +
+                '<div class="lista-itens">' + listaHtml + '</div>' +
+            '</div>';
+
+        }
+
+        // itens ainda não entregues de cada setor (o mesmo que aparece nos cartões do Bar / Cozinha)
+        function contarKDS(ehCozinha) {
+            var n = 0, ms = todasMesas();
+            for (var a = 0; a < ms.length; a++) {
+                if (ms[a].status !== 'ocupada') continue;
+                for (var b = 0; b < ms[a].itens.length; b++) {
+                    var it = ms[a].itens[b], t = (it.tipo || 'bar').toLowerCase();
+                    var coz = t.includes('cozinha') || t.includes('petisco') || t.includes('comida');
+                    if (it.statusPreparo !== 'entregue' && coz === ehCozinha) n++;
+                }
+            }
+            return n;
+        }
+
+        function renderizar() {
+            try {
+                capturarValoresFormulario();
+                var main = document.getElementById('app-conteudo');
+                if (!main) return;
+
+                if (estado.abaAtiva === 'caixa') {
+                    var mesaSel = acharMesa(estado.mesaSelecionadaId);
+                    var lateral = '';
+
+                    if (mesaSel) {
+                        lateral = htmlPainelMesa(mesaSel);
+                    } else {
+                        lateral = '<div class="painel-lateral" style="justify-content: center; align-items: center; text-align: center;"><p>👆 Clique em uma mesa ao lado para gerenciar.</p></div>';
+                    }
+
+                    function cardHtml(m) {
+                        var classeOcupada = m.status === 'ocupada' ? 'ocupada' : '';
+                        var classeSelecionada = String(m.id) === String(estado.mesaSelecionadaId) ? 'selecionada' : '';
+                        var valorCard = m.vip
+                            ? '<span style="font-size: 0.875rem; font-weight: normal;">' + brl(totalMesaObj(m)) + '</span>'
+                            : '<strong style="font-size: 1.1rem;">' + brl(totalMesaObj(m)) + '</strong>';
+                        var textoStatus = m.status === 'ocupada'
+                            ? (m.itens.length > 0 ? valorCard + '<br>' + m.itens.length + ' itens' : 'Sem pedidos')
+                            : 'Livre';
+                        var corBar = '#fff', corCoz = '#fff';
+                        if (m.status === 'ocupada') {
+                            corBar = corGrupo(m.itens, false);
+                            corCoz = corGrupo(m.itens, true);
+                        }
+                        return '<div class="mesa-card ' + classeOcupada + ' ' + classeSelecionada + '" data-id="' + esc(m.id) + '" onclick="selecionarMesa(this.getAttribute(\'data-id\'))">' +
+                            '<div style="display: flex; justify-content: space-between; gap: 0.25rem;"><strong style="overflow-wrap:anywhere;">' + esc(nomeMesa(m)) + '</strong><span style="white-space: nowrap;">' + bolinha('bar', corBar) + bolinha('coz', corCoz) + '</span></div>' +
+                            '<div><div style="font-size: 0.75rem;">' + textoStatus + '</div></div>' +
+                        '</div>';
+                    }
+                    var mesasHtml = '';
+                    for (var mIdx = 0; mIdx < estado.mesas.length; mIdx++) mesasHtml += cardHtml(estado.mesas[mIdx]);
+                    var pessoasHtml = '';
+                    var vipHtml = '';
+                    for (var pIdx = 0; pIdx < estado.pessoas.length; pIdx++) {
+                        if (estado.pessoas[pIdx].vip) vipHtml += cardHtml(estado.pessoas[pIdx]);
+                        else pessoasHtml += cardHtml(estado.pessoas[pIdx]);
+                    }
+
+                    main.innerHTML = '<div class="grid-caixa">' +
+                        '<div><h2 style="margin-bottom: 1rem; color:#000;">Selecione uma Mesa</h2><div class="mesas-grid">' + mesasHtml + '</div>' +
+                        '<div style="display:flex; justify-content:space-between; align-items:center; margin: 1.5rem 0 1rem;"><h2 style="color:#000;">👤 Pessoas (em pé)</h2>' +
+                        '<button onclick="novaPessoa()" style="background:#facc15; border:2px solid #000;">+ Nova Pessoa</button></div>' +
+                        (pessoasHtml ? '<div class="mesas-grid">' + pessoasHtml + '</div>' : '<p style="color:#000; font-size:0.85rem;">Nenhuma pessoa em aberto. Use "+ Nova Pessoa" para lançar pedidos no nome de alguém.</p>') +
+                        (vipHtml ? '<h2 style="color:#000; margin: 1.5rem 0 0.5rem;">⭐ VIP (conta mensal)</h2><p style="color:#000; font-size:0.8rem; margin-bottom:0.75rem;">Não entram no fechamento do dia nem no "Encerrar todas".</p><div class="mesas-grid">' + vipHtml + '</div>' : '') +
+                        '</div>' +
+                        lateral +
+                    '</div>';
+                } else if (estado.abaAtiva === 'abertas') {
+                    var abertasTodas = todasMesas().filter(function(m) { return m.status === 'ocupada' && m.itens.length > 0; });
+                    var vipLista = abertasTodas.filter(function(m) { return m.vip; });
+                    var abertasLista = abertasTodas.filter(function(m) { return !m.vip; });
+                    var totalAbertas = abertasLista.reduce(function(a, m) { return a + totalMesaObj(m); }, 0);
+                    var abHtml = '', vipAbHtml = '';
+                    for (var ab = 0; ab < abertasTodas.length; ab++) {
+                        var ma = abertasTodas[ab];
+                        var linhasAb = '';
+                        for (var li = 0; li < ma.itens.length; li++) {
+                            var ia = ma.itens[li];
+                            linhasAb += '<div style="display:flex; justify-content:space-between; gap:0.5rem; font-size:0.85rem;"><span>' + ia.qnt + 'x ' + esc(ia.produto) + (ia.obs ? ' <small>(📝 ' + esc(ia.obs) + ')</small>' : '') + '</span>' +
+                                '<span class="badge" style="background:' + corStatus(ia.statusPreparo || 'pendente') + ';">' + String(ia.statusPreparo || 'pendente').toUpperCase() + '</span></div>';
+                        }
+                        var cartaoAb = '<div class="mesa-card ocupada' + (String(ma.id) === String(estado.mesaSelecionadaId) ? ' selecionada' : '') + '" style="height:auto; gap:0.5rem; cursor:default;">' +
+                            '<div style="display:flex; justify-content:space-between;"><strong>' + esc(nomeMesa(ma)) + '</strong>' + (ma.vip ? '<span style="font-size:0.875rem; font-weight:normal;">' + brl(totalMesaObj(ma)) + '</span>' : '<strong>' + brl(totalMesaObj(ma)) + '</strong>') + '</div>' +
+                            (ma.abertaEm ? '<small>Aberta em ' + esc(ma.abertaEm) + '</small>' : '') +
+                            '<div style="display:flex; flex-direction:column; gap:0.25rem;">' + linhasAb + '</div>' +
+                            '<div style="display:flex; gap:0.4rem; flex-wrap:wrap;"><button data-id="' + esc(ma.id) + '" onclick="selecionarMesa(this.getAttribute(\'data-id\'))" style="background:#fff; border:2px solid #000; flex:1;">➕ Incluir produtos</button>' +
+                            '<button data-id="' + esc(ma.id) + '" onclick="fecharMesa(this.getAttribute(\'data-id\'))" style="background:#f87171; border:2px solid #000; flex:1;">💳 Fechar comanda</button>' +
+                            '<button data-id="' + esc(ma.id) + '" onclick="imprimirAberta(this.getAttribute(\'data-id\'))" title="Imprimir na térmica" style="background:#fff; border:2px solid #000;">🖨️</button></div>' +
+                        '</div>';
+                        if (ma.vip) vipAbHtml += cartaoAb; else abHtml += cartaoAb;
+                    }
+                    var totalVipAb = vipLista.reduce(function(a, m) { return a + totalMesaObj(m); }, 0);
+                    var mesaSelAb = acharMesa(estado.mesaSelecionadaId);
+                    var lateralAb = mesaSelAb
+                        ? htmlPainelMesa(mesaSelAb)
+                        : '<div class="painel-lateral" style="justify-content: center; align-items: center; text-align: center;"><p>👆 Clique em "➕ Incluir produtos" em uma comanda para lançar pedidos aqui.</p></div>';
+                    main.innerHTML = '<div class="grid-caixa"><div>' +
+                        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-bottom:1rem;">' +
+                            '<h2 style="color:#000;">📋 Mesas abertas: ' + abertasLista.length + ' | ' + brl(totalAbertas) + '</h2>' +
+                            '<button onclick="encerrarTodas()" style="background:#f87171; border:2px solid #000;"' + (abertasLista.length === 0 ? ' disabled' : '') + '>🔒 Encerrar todas (senha)</button>' +
+                        '</div>' +
+                        (abHtml ? '<div class="mesas-grid">' + abHtml + '</div>' : '<p style="color:#000; font-weight:bold; padding:2rem; text-align:center;">Nenhuma mesa em aberto.</p>') +
+                        (vipAbHtml ? '<h2 style="color:#000; margin: 1.5rem 0 0.5rem;">⭐ VIP em aberto: ' + vipLista.length + '</h2><p style="color:#000; font-size:0.875rem; font-weight:normal; margin-bottom:0.25rem;">Total: ' + brl(totalVipAb) + '</p><p style="color:#000; font-size:0.8rem; margin-bottom:0.75rem;">Contas mensais: não entram no "Encerrar todas" nem no fechamento do dia.</p><div class="mesas-grid">' + vipAbHtml + '</div>' : '') +
+                    '</div>' + lateralAb + '</div>';
+                } else if (estado.abaAtiva === 'finalizadas') {
+                    var finHtml = '', totalFin = 0, porForma = {}, totalVipFin = 0;
+                    estado.finalizadas.forEach(function(f) {
+                        if (ehVip(f.mesa)) { totalVipFin += f.total; }
+                        else { totalFin += f.total; var nf = f.forma || 'Sem forma'; porForma[nf] = (porForma[nf] || 0) + f.total; }
+                        var linhasF = f.itens.map(function(it) {
+                            return '<div style="display:flex; justify-content:space-between; gap:0.5rem; font-size:0.85rem;"><span>' + it.qnt + 'x ' + esc(it.produto) + (it.obs ? ' <small>(📝 ' + esc(it.obs) + ')</small>' : '') + (soHora(it.pedidoEm) ? ' <small>às ' + esc(soHora(it.pedidoEm)) + '</small>' : '') + '</span><span>' + brl(it.qnt * it.preco) + '</span></div>';
+                        }).join('');
+                        finHtml += '<div class="mesa-card" style="height:auto; gap:0.5rem; cursor:default;">' +
+                            '<div style="display:flex; justify-content:space-between;"><strong>' + (ehVip(f.mesa) ? '⭐ ' : '') + esc(rotuloChave(f.mesa)) + '</strong><strong>' + brl(f.total) + '</strong></div>' +
+                            '<small>Aberta: ' + esc(f.abertura) + '<br>Fechada: ' + esc(f.tchau) + (f.forma ? '<br>💳 Pagamento: <b>' + esc(f.forma) + '</b>' : '') + '</small>' +
+                            '<div style="display:flex; flex-direction:column; gap:0.25rem;">' + linhasF + '</div>' +
+                            '<div style="display:flex; gap:0.5rem;"><button data-k="' + esc(f.k) + '" onclick="imprimirFinalizada(this.getAttribute(\'data-k\'))" style="background:#fff; border:2px solid #000; flex:1;">🖨️ Imprimir</button>' +
+                            '<button data-k="' + esc(f.k) + '" onclick="pdfFinalizada(this.getAttribute(\'data-k\'))" style="background:#fff; border:2px solid #000; flex:1;">📄 PDF (Drive)</button></div>' +
+                        '</div>';
+                    });
+                    var papel = lerConfig('papel', '80');
+                    main.innerHTML = '<div>' +
+                        '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; margin-bottom:1rem;">' +
+                            '<div><h2 style="color:#000;">✅ Comandas finalizadas: ' + estado.finalizadas.length + ' | ' + brl(totalFin) + '</h2>' +
+                            '<div style="color:#000; font-size:0.85rem;">' + Object.keys(porForma).map(function(k) { return esc(k) + ': <b>' + brl(porForma[k]) + '</b>'; }).join(' &nbsp;|&nbsp; ') + (totalVipFin > 0 ? '<br>⭐ VIP (mensal, fora do caixa): <b>' + brl(totalVipFin) + '</b>' : '') + '</div></div>' +
+                            '<div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap; color:#000; font-size:0.85rem;">' +
+                                '<label>Papel: <select onchange="mudarPapel(this.value)" style="width:auto;"><option value="80"' + (papel === '80' ? ' selected' : '') + '>80 mm</option><option value="58"' + (papel === '58' ? ' selected' : '') + '>58 mm</option></select></label>' +
+                                '<label><input type="checkbox" onchange="mudarAutoImp(this)"' + (lerConfig('autoimp', '0') === '1' ? ' checked' : '') + ' style="width:auto;"> Imprimir ao fechar a conta</label>' +
+                            '</div>' +
+                        '</div>' +
+                        (finHtml ? '<div class="mesas-grid">' + finHtml + '</div>' : '<p style="color:#000; font-weight:bold; padding:2rem; text-align:center;">Nenhuma comanda finalizada hoje.</p>') +
+                        '<p style="color:#000; font-size:0.8rem; margin-top:1rem;">Ao usar "Finalizar Dia" (com senha) esta lista é zerada. O consumo das contas VIP também fica acumulado na aba VIP da planilha.</p>' +
+                    '</div>';
+                } else {
+                    var ehCozinha = (estado.abaAtiva === 'cozinha');
+                    var itensKDS = [];
+
+                    var mesasKDS = todasMesas();
+                    for (var x = 0; x < mesasKDS.length; x++) {
+                        var mesaObj = mesasKDS[x];
+                        if (mesaObj.status === 'ocupada') {
+                            for (var y = 0; y < mesaObj.itens.length; y++) {
+                                var itemMesa = mesaObj.itens[y];
+                                var tipoItem = (itemMesa.tipo || 'bar').toLowerCase();
+                                var eCozinhaItem = tipoItem.includes('cozinha') || tipoItem.includes('petisco') || tipoItem.includes('comida');
+
+                                if (itemMesa.statusPreparo !== 'entregue' && ((ehCozinha && eCozinhaItem) || (!ehCozinha && !eCozinhaItem))) {
+                                    itensKDS.push({
+                                        idItem: itemMesa.idItem,
+                                        mesa: nomeMesa(mesaObj),
+                                        produto: itemMesa.produto,
+                                        qnt: itemMesa.qnt,
+                                        statusPreparo: itemMesa.statusPreparo || 'pendente',
+                                        obs: itemMesa.obs || ''
+                                    });
+                                }
+                            }
+                        }
+                    }
+
+                    var kdsHtml = '';
+                    if (itensKDS.length === 0) {
+                        kdsHtml = '<p style="grid-column: span 4; text-align: center; padding: 3rem; color:#000; font-weight:bold;">Nenhum item pendente no momento.</p>';
+                    } else {
+                        for (var z = 0; z < itensKDS.length; z++) {
+                            var kItem = itensKDS[z];
+                            var classePreparo = kItem.statusPreparo;
+                            
+                            kdsHtml += '<div class="kds-card ' + classePreparo + '" onclick="lidarComCliqueCard(' + kItem.idItem + ')">' +
+                                '<div style="display: flex; justify-content: space-between;"><span class="badge">' + esc(kItem.mesa) + '</span><span style="font-size:0.75rem; font-weight:bold;">' + kItem.statusPreparo.toUpperCase() + '</span></div>' +
+                                '<div><div style="font-size: 1.2rem; font-weight: bold;">' + kItem.qnt + 'x ' + esc(kItem.produto) + '</div>' + htmlObs(kItem.obs, true) + '</div>' +
+                                '<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">' +
+                                    '<span style="font-size: 0.65rem; font-weight: bold;">1 toque: preparando | 2 toques: pronto</span>' +
+                                    '<button class="btn-acao-entregue" onclick="event.stopPropagation(); mudarEstadoPorId(' + kItem.idItem + ', \'entregue\')">Marcar Entregue</button>' +
+                                '</div>' +
+                            '</div>';
+                        }
+                    }
+
+                    var tituloPainel = ehCozinha ? '🍳 Cozinha' : '🍻 Bar';
+                    main.innerHTML = '<div><h2 style="margin-bottom: 1rem; color:#000;">' + tituloPainel + '</h2><div class="kds-grid">' + kdsHtml + '</div></div>';
+                }
+                var btnBar2 = document.getElementById('btn-aba-bar'), btnCoz2 = document.getElementById('btn-aba-cozinha');
+                if (btnBar2) { var nBar = contarKDS(false); btnBar2.textContent = '🍻 Bar' + (nBar > 0 ? ' (' + nBar + ')' : ''); }
+                if (btnCoz2) { var nCoz = contarKDS(true); btnCoz2.textContent = '🍳 Cozinha' + (nCoz > 0 ? ' (' + nCoz + ')' : ''); }
+                var btnAb = document.getElementById('btn-aba-abertas');
+                if (btnAb) {
+                    var nAb = todasMesas().filter(function(m) { return m.status === 'ocupada' && m.itens.length > 0 && !m.vip; }).length;
+                    btnAb.textContent = '📋 Abertas' + (nAb > 0 ? ' (' + nAb + ')' : '');
+                }
+                var btnFn = document.getElementById('btn-aba-finalizadas');
+                if (btnFn) btnFn.textContent = '✅ Finalizadas' + (estado.finalizadas.length > 0 ? ' (' + estado.finalizadas.length + ')' : '');
+            } catch (err) {
+                console.log("Erro crítico no renderizar:", err);
+            }
+        }
+
+        // Executa imediatamente e sincroniza em segundo plano
+        renderizar();
+        if (!CHAVE) pedirChave('');
+        sincronizar();
+        setInterval(sincronizar, 5000);
+    </script>
 </body>
 </html>
