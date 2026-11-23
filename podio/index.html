@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>K9 · Pódio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* Pódio para OBS / TV vertical: 1080 x 1920, fundo preto. */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:#000;overflow:hidden}
+body{color:#fff;font-family:"Barlow Condensed","Arial Narrow","DejaVu Sans Condensed",sans-serif;-webkit-font-smoothing:antialiased}
+.mono{font-family:"JetBrains Mono",Consolas,"DejaVu Sans Mono",monospace}
+
+.stage{position:absolute;top:0;left:0;width:1080px;height:1920px;background:#000;overflow:hidden;transform-origin:0 0;
+  display:flex;flex-direction:column}
+.stage::before{content:"";position:absolute;left:50%;top:420px;width:1100px;height:900px;transform:translateX(-50%);
+  background:radial-gradient(closest-side,rgba(245,197,66,.16),transparent 70%);pointer-events:none}
+
+/* topo */
+.hdr{padding:72px 72px 0;position:relative;z-index:1}
+.logo{font-style:italic;font-weight:800;font-size:104px;line-height:.86;text-transform:uppercase;letter-spacing:-.01em}
+.logo span{color:#e10600}
+.meta{font-weight:600;font-size:28px;line-height:1.2;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-top:24px}
+.meta i{font-style:normal;color:rgba(255,255,255,.3);margin:0 12px}
+.rule{width:120px;height:4px;background:#fff;margin:28px 0 0}
+
+/* pódio */
+.podium{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:16px;align-items:end;padding:0 36px;position:relative;z-index:1}
+.pl{display:flex;flex-direction:column;align-items:center;text-align:center;--c:#fff}
+.pl.p1{--c:#f5c542;--h:600px;--d:0s}
+.pl.p2{--c:#d7dde6;--h:460px;--d:.6s}
+.pl.p3{--c:#d08a4c;--h:350px;--d:1.2s}
+
+.who{padding:0 6px 26px;width:100%}
+.name{display:block;font-weight:800;font-size:54px;line-height:1;text-transform:uppercase;letter-spacing:.01em;
+  min-height:108px;display:flex;align-items:flex-end;justify-content:center;
+  animation:pulse 2.4s ease-in-out infinite;animation-delay:var(--d);transform-origin:50% 100%}
+.p1 .name{font-size:72px;min-height:144px}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+.code{display:block;font-size:24px;color:rgba(255,255,255,.5);margin-top:14px}
+.time{display:block;font-weight:700;font-size:38px;margin-top:10px;color:var(--c)}
+.p1 .time{font-size:46px}
+
+.block{width:100%;height:var(--h);position:relative;border-radius:6px 6px 0 0;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--c) 30%,#000),#000 92%);
+  border-top:5px solid var(--c);box-shadow:0 -10px 60px -20px var(--c)}
+.block .pos{position:absolute;left:0;right:0;top:20px;font-style:italic;font-weight:800;font-size:180px;line-height:1;color:var(--c)}
+.p1 .block .pos{font-size:250px}
+.block .ord{position:absolute;left:0;right:0;bottom:24px;font-weight:600;font-size:22px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+
+/* rodapé: carro + nome com 1050 px */
+.bottom{width:1050px;margin:0 auto;padding:30px 0 34px;position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.12)}
+.label{display:flex;justify-content:space-between;align-items:center;padding:0 4px;
+  font-weight:600;font-size:20px;line-height:1;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.label .upd{font-weight:500;font-size:17px;letter-spacing:.04em;color:rgba(255,255,255,.38)}
+.car{display:block;width:1050px;height:auto;margin-top:6px}
+.vname{display:inline-block;font-style:italic;font-weight:800;line-height:.9;text-transform:uppercase;white-space:nowrap;margin-top:4px;font-size:150px}
+
+.msg{grid-column:1/-1;align-self:center;text-align:center;font-weight:600;font-size:36px;color:rgba(255,255,255,.6)}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="hdr">
+    <div class="logo">K9 <span>Campeonato</span><br>Assetto Corsa</div>
+    <div class="meta">Pódio<i>/</i>Interlagos<i>/</i>Melhor volta</div>
+    <div class="rule"></div>
+  </div>
+
+  <div class="podium" id="podium"><div class="msg">Carregando pódio…</div></div>
+
+  <div class="bottom">
+    <div class="label"><span>Veículo da competição</span><span class="upd mono" id="foot"></span></div>
+    <img class="car" src="../TV/gt3rs.png" alt="Porsche 911 GT3 RS" onerror="this.style.display='none'">
+    <div class="vname" id="vname">Porsche 911 GT3 RS</div>
+  </div>
+</div>
+
+<script>
+/* ========================= CONFIGURAÇÃO ========================= */
+// Mesmo link CSV da aba RANKING usado nas outras páginas
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSpmePeuXEvjsDGJIwRZljAUhs8EyC03CZw8nJcBYSrj_L-4JcEw2iCS1TX0TM-fZiclvLVzjMf-kgo/pub?gid=497839822&single=true&output=csv";
+// Atualizar a cada X segundos
+const REFRESH_SECONDS = 60;
+/* ================================================================ */
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function fit(){
+  const k = Math.min(innerWidth/1080, innerHeight/1920);
+  const st = $("#stage");
+  st.style.transform = `scale(${k})`;
+  st.style.left = ((innerWidth - 1080*k)/2) + "px";
+  st.style.top  = ((innerHeight - 1920*k)/2) + "px";
+}
+addEventListener("resize", fit); fit();
+
+function fitName(){
+  const el=$("#vname"); el.style.fontSize="150px";
+  const w=el.scrollWidth; if(w) el.style.fontSize=(150*1050/w)+"px";
+}
+if(document.fonts) document.fonts.ready.then(fitName);
+fitName();
+
+function parseCSV(text){
+  const out=[]; let row=[], f="", q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(q){ if(ch==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=ch; }
+    else if(ch==='"') q=true;
+    else if(ch===','){ row.push(f); f=""; }
+    else if(ch==='\n'||ch==='\r'){ if(ch==='\r'&&text[i+1]==='\n') i++; row.push(f); out.push(row); row=[]; f=""; }
+    else f+=ch;
+  }
+  if(f!==""||row.length){ row.push(f); out.push(row); }
+  return out;
+}
+function toMs(t){
+  const p = String(t).trim().split(/[:.,]/).map(Number);
+  if(p.length<3 || p.some(isNaN)) return NaN;
+  const [m,s,ms]=p.slice(-3);
+  return (m*60+s)*1000+ms;
+}
+function fmt(ms){
+  const m=Math.floor(ms/60000), s=Math.floor(ms%60000/1000), r=ms%1000;
+  return `${m}:${String(s).padStart(2,"0")}.${String(r).padStart(3,"0")}`;
+}
+function fromSheet(rows){
+  const start = rows.findIndex(r => r.some(c => /^\s*NOME\s*$/i.test(c)));
+  const h = rows[start] || [];
+  const iN = h.findIndex(c=>/^\s*NOME\s*$/i.test(c)), iT = h.findIndex(c=>/^\s*TEMPO/i.test(c)), iC = h.findIndex(c=>/^\s*COD/i.test(c));
+  const N = iN<0?3:iN, T = iT<0?4:iT, C = iC<0?2:iC;
+  return rows.slice(start+1)
+    .map(r => ({cod:(r[C]||"").trim(), nome:(r[N]||"").trim(), ms:toMs(r[T]||"")}))
+    .filter(d => d.nome && !isNaN(d.ms))
+    .sort((a,b)=>a.ms-b.ms);
+}
+
+// nomes muito longos ficam menores para caber em 2 linhas
+function nameSize(nome, base){
+  const n = nome.length;
+  return n > 26 ? base*0.72 : n > 18 ? base*0.86 : base;
+}
+
+let lastKey = "";
+function render(data){
+  if(!data.length){ $("#podium").innerHTML = `<div class="msg">Nenhum tempo registrado ainda.</div>`; lastKey=""; return; }
+  const top = data.slice(0,3);
+  const key = top.map(d=>d.nome+d.ms).join("|");
+  if(key === lastKey) return;          // não reinicia a animação se nada mudou
+  lastKey = key;
+  const ords = ["1º lugar","2º lugar","3º lugar"];
+  $("#podium").innerHTML = [1,0,2].map(i=>{
+    const d = top[i];
+    if(!d) return `<div class="pl p${i+1}"></div>`;
+    const base = i===0 ? 72 : 54;
+    return `<div class="pl p${i+1}">
+      <div class="who">
+        <span class="name" style="font-size:${nameSize(d.nome,base)}px">${esc(d.nome)}</span>
+        <span class="code mono">${esc(d.cod)||"—"}</span>
+        <span class="time mono">${fmt(d.ms)}</span>
+      </div>
+      <div class="block"><div class="pos">${i+1}</div><div class="ord">${ords[i]}</div></div>
+    </div>`;
+  }).join("");
+}
+
+let last = null;
+async function load(){
+  try{
+    const res = await fetch(CSV_URL, {cache:"no-store"});
+    if(!res.ok) throw new Error(res.status);
+    const txt = await res.text();
+    if(/<html/i.test(txt)) throw new Error("login");
+    render(fromSheet(parseCSV(txt)));
+    last = new Date();
+    $("#foot").textContent = "Atualizado às " + last.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  }catch(e){
+    $("#foot").textContent = last ? "Sem conexão. Última atualização às " + last.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}) : "Não foi possível carregar a planilha";
+  }
+}
+load();
+setInterval(load, REFRESH_SECONDS*1000);
+</script>
+</body>
+</html>
