@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>K9 Campeonato · Assetto Corsa</title>
+<title>K9 Campeonato · Assetto Corsa · Interlagos · Porsche 911 GT3 RS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,700;0,800;1,800&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -42,6 +42,12 @@ header::after{content:"";position:absolute;inset:0;background:
 h1{font:italic 800 clamp(44px,8vw,88px)/.9 "Barlow Condensed";text-transform:uppercase;letter-spacing:-.01em;margin:18px 0 10px}
 h1 span{color:var(--red)}
 .sub{color:var(--muted);max-width:560px;font-size:16px}
+.info{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:26px;max-width:920px}
+.info-i{background:rgba(255,255,255,.03);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:4px;padding:14px 16px}
+.info-i span{display:block;font:700 12px/1 "Barlow Condensed";letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.info-i b{display:block;font:800 24px/1.1 "Barlow Condensed";text-transform:uppercase;margin-top:7px}
+.info-i small{display:block;font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35}
+@media (max-width:820px){.info{grid-template-columns:1fr 1fr}}
 nav.tabs{display:flex;gap:6px;margin-top:28px;flex-wrap:wrap}
 nav.tabs a{font:700 15px/1 "Barlow Condensed";letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
   padding:12px 18px;border:1px solid var(--line);background:var(--bg2);border-radius:3px;transition:.2s}
@@ -155,7 +161,13 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
   <div class="wrap hero">
     <span class="tag"><i></i>Ranking ao vivo</span>
     <h1>K9 <span>Campeonato</span><br>Assetto Corsa</h1>
-    <p class="sub">Classificação oficial por melhor volta. A tabela é atualizada automaticamente a partir da planilha do campeonato.</p>
+    <p class="sub">Campeonato de tomada de tempo no Assetto Corsa. Vence quem fizer a volta mais rápida em Interlagos a bordo do Porsche 911 GT3 RS.</p>
+    <div class="info">
+      <div class="info-i"><span>Jogo</span><b>Assetto Corsa</b></div>
+      <div class="info-i"><span>Pista</span><b>Interlagos</b><small>Autódromo José Carlos Pace · São Paulo</small></div>
+      <div class="info-i"><span>Carro</span><b>Porsche 911 GT3 RS</b><small>Mesmo carro para todos os pilotos</small></div>
+      <div class="info-i"><span>Formato</span><b>Melhor volta</b><small>Menor tempo vence</small></div>
+    </div>
     <nav class="tabs">
       <a href="#ranking">Classificação</a>
       <a href="#inscricao" class="cta">Inscreva-se</a>
@@ -230,7 +242,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
   </section>
 </main>
 
-<footer><div class="wrap">K9 Campeonato · Assetto Corsa — classificação gerada a partir da planilha oficial.</div></footer>
+<footer><div class="wrap">K9 Campeonato · Assetto Corsa · Interlagos · Porsche 911 GT3 RS. Classificação gerada a partir da planilha oficial.</div></footer>
 <div class="checker"></div>
 
 <script>
