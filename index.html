@@ -2,294 +2,94 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>K9 Campeonato · Assetto Corsa · Interlagos · Porsche 911 GT3 RS</title>
+<meta name="viewport" content="width=1080, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>K9 · Ranking TV</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,700;0,800;1,800&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   CONFIGURAÇÃO — edite só estas duas linhas (no <script> abaixo)
-   1) CSV_URL  → link "Publicar na Web" da aba RANKING (formato CSV)
-   2) ENTRY    → códigos das perguntas do Google Forms
-   ============================================================ */
-:root{
-  --bg:#0b0c0f; --bg2:#121419; --card:#171a21; --line:#262a33;
-  --txt:#eef0f4; --muted:#8b92a1; --red:#e10600; --red2:#ff2d20;
-  --gold:#f5c542; --silver:#c9d1dc; --bronze:#d08a4c; --green:#22c55e;
-}
+/* Página para OBS / TV vertical: 1080 x 1920, fundo preto, só o ranking. */
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;line-height:1.5;min-height:100vh}
-a{color:inherit}
+html,body{width:100%;height:100%;background:#000;overflow:hidden}
+body{color:#fff;font-family:"Barlow Condensed","Arial Narrow","Roboto Condensed","DejaVu Sans Condensed",sans-serif;-webkit-font-smoothing:antialiased}
 
-/* faixa quadriculada */
-.checker{height:14px;background:
-  conic-gradient(#fff 25%,#000 0 50%,#fff 0 75%,#000 0) 0 0/14px 14px;opacity:.9}
+.stage{position:absolute;top:0;left:0;width:1080px;height:1920px;background:#000;overflow:hidden;transform-origin:0 0}
 
-header{position:relative;overflow:hidden;background:
-  radial-gradient(1200px 400px at 85% -10%,rgba(225,6,0,.35),transparent 60%),
-  linear-gradient(180deg,#14161b,var(--bg));border-bottom:1px solid var(--line)}
-header::after{content:"";position:absolute;inset:0;background:
-  repeating-linear-gradient(115deg,transparent 0 60px,rgba(255,255,255,.025) 60px 62px);pointer-events:none}
-.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-.hero{padding:48px 0 40px;position:relative;z-index:1}
-.tag{display:inline-flex;gap:8px;align-items:center;font:700 13px/1 "Barlow Condensed";letter-spacing:.18em;
-  text-transform:uppercase;color:var(--red2);background:rgba(225,6,0,.1);border:1px solid rgba(225,6,0,.35);
-  padding:7px 12px;border-radius:3px}
-.tag i{width:8px;height:8px;border-radius:50%;background:var(--red2);box-shadow:0 0 10px var(--red2);animation:pulse 1.6s infinite}
-@keyframes pulse{50%{opacity:.3}}
-h1{font:italic 800 clamp(44px,8vw,88px)/.9 "Barlow Condensed";text-transform:uppercase;letter-spacing:-.01em;margin:18px 0 10px}
-h1 span{color:var(--red)}
-.sub{color:var(--muted);max-width:560px;font-size:16px}
-.info{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:26px;max-width:1100px}
-.info-i.rec{border-left-color:var(--gold);background:rgba(245,197,66,.06)}
-.info-i.rec b{font-family:"JetBrains Mono";font-size:22px;letter-spacing:-.01em}
-.info-i{background:rgba(255,255,255,.03);border:1px solid var(--line);border-left:3px solid var(--red);border-radius:4px;padding:14px 16px}
-.info-i span{display:block;font:700 12px/1 "Barlow Condensed";letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
-.info-i b{display:block;font:800 24px/1.1 "Barlow Condensed";text-transform:uppercase;margin-top:7px}
-.info-i small{display:block;font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35}
-@media (max-width:980px){.info{grid-template-columns:1fr 1fr}.info-i.rec{grid-column:1/-1}}
-nav.tabs{display:flex;gap:6px;margin-top:28px;flex-wrap:wrap}
-nav.tabs a{font:700 15px/1 "Barlow Condensed";letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
-  padding:12px 18px;border:1px solid var(--line);background:var(--bg2);border-radius:3px;transition:.2s}
-nav.tabs a:hover{border-color:var(--red);color:#fff}
-nav.tabs a.cta{background:var(--red);border-color:var(--red)}
-nav.tabs a.cta:hover{background:var(--red2)}
+/* imagem lateral (direita), escurecida e fundida no preto */
+.car{position:absolute;top:0;right:0;width:520px;height:1920px}
+.car img{width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(.62) contrast(1.08) saturate(.85);display:block}
+.car::after{content:"";position:absolute;inset:0;background:
+  linear-gradient(90deg,#000 0%,#000 30%,rgba(0,0,0,.6) 52%,rgba(0,0,0,.15) 78%,rgba(0,0,0,.3) 100%),
+  linear-gradient(180deg,#000 0%,transparent 18%,transparent 78%,#000 100%)}
 
-section{padding:48px 0}
-.sec-h{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
-h2{font:800 34px/1 "Barlow Condensed";text-transform:uppercase;letter-spacing:.02em}
-h2 small{display:block;font:500 13px/1.4 Inter;color:var(--muted);text-transform:none;letter-spacing:0;margin-top:6px}
+.content{position:absolute;top:0;left:0;width:1080px;height:1920px;padding:110px 0 0 72px;z-index:1}
 
-/* pódio */
-.podium{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:14px;align-items:end;margin-bottom:28px}
-.pod{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px 18px 0;text-align:center;
-  position:relative;overflow:hidden}
-.pod::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--c)}
-.pod .pos{font:800 64px/1 "Barlow Condensed";color:var(--c);opacity:.95}
-.pod .nm{font:700 20px/1.15 "Barlow Condensed";text-transform:uppercase;margin:8px 0 4px;min-height:46px;
-  display:flex;align-items:center;justify-content:center;word-break:break-word}
-.pod .tm{font:700 22px/1 "JetBrains Mono";margin:6px 0 4px}
-.pod .gp{font:500 12px "JetBrains Mono";color:var(--muted);margin-bottom:16px}
-.pod .base{height:var(--h);background:linear-gradient(180deg,color-mix(in srgb,var(--c) 22%,transparent),transparent);
-  margin:0 -18px;border-top:1px dashed color-mix(in srgb,var(--c) 40%,transparent)}
-.p1{--c:var(--gold);--h:70px}.p2{--c:var(--silver);--h:44px}.p3{--c:var(--bronze);--h:26px}
+.kicker{font:600 26px/1 "Barlow Condensed","Arial Narrow","DejaVu Sans Condensed",sans-serif;letter-spacing:.32em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+h1{font:italic 800 132px/.86 "Barlow Condensed","Arial Narrow","DejaVu Sans Condensed",sans-serif;text-transform:uppercase;letter-spacing:-.01em;margin:22px 0 0}
+.meta{font:600 30px/1.2 "Barlow Condensed","Arial Narrow","DejaVu Sans Condensed",sans-serif;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.72);margin-top:26px}
+.meta i{font-style:normal;color:rgba(255,255,255,.3);margin:0 12px}
+.rule{width:120px;height:4px;background:#fff;margin:44px 0 30px}
 
-/* controles */
-.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.searchbar{margin-bottom:14px}
-.search{width:100%;background:var(--bg2);border:1px solid var(--line);color:var(--txt);padding:14px 16px 14px 44px;border-radius:4px;
-  font:500 15px Inter;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='none' stroke='%238b92a1' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='M17 17l-4.5-4.5'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:15px center}
-.search:focus{border-color:var(--red)}
-.status{font:500 12px "JetBrains Mono";color:var(--muted);display:flex;align-items:center;gap:8px}
-.status b{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
-.status.err b{background:var(--red);box-shadow:0 0 8px var(--red)}
-.status.demo b{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+/* lista */
+.head,.row{display:grid;grid-template-columns:78px 1fr 190px;align-items:center;width:740px}
+.head{font:600 20px/1 "Barlow Condensed","Arial Narrow","DejaVu Sans Condensed",sans-serif;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.45);
+  padding:0 0 16px;border-bottom:1px solid rgba(255,255,255,.18)}
+.head .t,.row .t{text-align:right}
+.row{height:64px;border-bottom:1px solid rgba(255,255,255,.08)}
+.row .p{font:800 38px/1 "Barlow Condensed","Arial Narrow","DejaVu Sans Condensed",sans-serif}
+.row .n{font:600 34px/1 "Barlow Condensed","Arial Narrow","DejaVu Sans Condensed",sans-serif;text-transform:uppercase;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:18px}
+.row .t{font:700 30px/1 "JetBrains Mono",Consolas,"DejaVu Sans Mono",monospace;letter-spacing:-.01em}
+.row.top .p,.row.top .n{font-weight:800}
+.row.top{height:78px}
+.row.top .p{font-size:50px}
+.row.top .n{font-size:42px}
+.row.top .t{font-size:34px}
 
-/* tabela */
-.board{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden}
-table{width:100%;border-collapse:collapse}
-thead th{font:700 12px/1 "Barlow Condensed";letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
-  text-align:left;padding:14px 16px;background:var(--bg2);border-bottom:1px solid var(--line)}
-tbody td{padding:13px 16px;border-bottom:1px solid var(--line);font-size:15px}
-tbody tr:last-child td{border-bottom:0}
-tbody tr{transition:background .15s}
-tbody tr:hover{background:rgba(255,255,255,.03)}
-td.p{width:70px;font:800 22px/1 "Barlow Condensed";color:var(--muted)}
-tr.t1 td.p{color:var(--gold)} tr.t2 td.p{color:var(--silver)} tr.t3 td.p{color:var(--bronze)}
-tr.t1,tr.t2,tr.t3{box-shadow:inset 3px 0 0 var(--rc)}
-tr.t1{--rc:var(--gold)} tr.t2{--rc:var(--silver)} tr.t3{--rc:var(--bronze)}
-td.n{font-weight:600}
-td.c{font:500 13px "JetBrains Mono";color:var(--muted);width:90px}
-td.t{font:700 15px "JetBrains Mono";text-align:right;white-space:nowrap}
-td.g{font:500 13px "JetBrains Mono";color:var(--muted);text-align:right;width:120px;white-space:nowrap}
-th.r{text-align:right}
-.more{margin-top:14px;text-align:center;font-size:13px;color:var(--muted)}
-.more:empty{display:none}
-.empty{padding:40px;text-align:center;color:var(--muted)}
-mark{background:rgba(225,6,0,.35);color:#fff;border-radius:2px;padding:0 2px}
-
-/* formulário */
-.form-box{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:28px;max-width:720px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.fld{display:flex;flex-direction:column;gap:7px}
-.fld.full{grid-column:1/-1}
-.fld label,.fld legend{font:700 13px/1 "Barlow Condensed";letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.fld label em,.fld legend em{color:var(--red2);font-style:normal}
-.fld input[type=text],.fld input[type=email],.fld input[type=tel]{background:var(--bg2);border:1px solid var(--line);
-  color:var(--txt);padding:13px 14px;border-radius:4px;font:500 15px Inter;outline:none;transition:.15s}
-.fld input:focus{border-color:var(--red)}
-.fld.bad input{border-color:var(--red2)}
-.fld .err{font-size:12px;color:var(--red2);min-height:0;display:none}
-.fld.bad .err{display:block}
-fieldset.fld{border:0}
-.opts{display:flex;gap:10px}
-.opts label{flex:1;cursor:pointer;font:600 15px Inter;letter-spacing:0;text-transform:none;color:var(--txt)}
-.opts input{position:absolute;opacity:0}
-.opts span{display:block;text-align:center;padding:12px;border:1px solid var(--line);background:var(--bg2);border-radius:4px;transition:.15s}
-.opts input:checked+span{border-color:var(--red);background:rgba(225,6,0,.15)}
-.opts input:focus-visible+span{outline:2px solid var(--red2)}
-.btn{margin-top:24px;width:100%;background:var(--red);color:#fff;border:0;padding:16px;border-radius:4px;cursor:pointer;
-  font:800 18px/1 "Barlow Condensed";letter-spacing:.14em;text-transform:uppercase;transition:.2s}
-.btn:hover{background:var(--red2)}
-.btn:disabled{opacity:.5;cursor:wait}
-.note{font-size:12px;color:var(--muted);margin-top:14px}
-.done{text-align:center;padding:30px 10px}
-.done h3{font:800 36px/1 "Barlow Condensed";text-transform:uppercase;margin:12px 0 8px}
-.done p{color:var(--muted)}
-.done .flag{width:64px;height:64px;margin:0 auto;border-radius:50%;background:
-  conic-gradient(#fff 25%,#000 0 50%,#fff 0 75%,#000 0) 0 0/16px 16px;border:3px solid var(--green)}
-.done button{margin-top:18px;background:none;border:1px solid var(--line);color:var(--txt);padding:10px 16px;border-radius:4px;cursor:pointer}
-@media (max-width:720px){.grid{grid-template-columns:1fr}.form-box{padding:20px}}
-
-footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:13px}
-
-@media (max-width:720px){
-  .podium{grid-template-columns:1fr;gap:10px}
-  .p1{order:-1}
-  .pod .base{display:none}.pod{padding-bottom:6px}
-  td.c,th.c,td.g,th.g{display:none}
-  tbody td{padding:12px 10px}
-  td.p{width:46px}
-  .tools{width:100%}
-}
+.foot{position:absolute;left:72px;bottom:64px;font:500 20px/1 "JetBrains Mono",Consolas,"DejaVu Sans Mono",monospace;color:rgba(255,255,255,.4);letter-spacing:.04em}
+.msg{font:600 32px/1.3 "Barlow Condensed","Arial Narrow","DejaVu Sans Condensed",sans-serif;color:rgba(255,255,255,.6);padding:40px 0}
 </style>
 </head>
 <body>
-<div class="checker"></div>
-<header>
-  <div class="wrap hero">
-    <span class="tag"><i></i>Ranking ao vivo</span>
-    <h1>K9 <span>Campeonato</span><br>Assetto Corsa</h1>
-    <p class="sub">Campeonato de tomada de tempo no Assetto Corsa. Vence quem fizer a volta mais rápida em Interlagos a bordo do Porsche 911 GT3 RS.</p>
-    <div class="info">
-      <div class="info-i"><span>Jogo</span><b>Assetto Corsa</b></div>
-      <div class="info-i"><span>Pista</span><b>Interlagos</b><small>Autódromo José Carlos Pace · São Paulo</small></div>
-      <div class="info-i"><span>Carro</span><b>Porsche 911 GT3 RS</b><small>Mesmo carro para todos os pilotos</small></div>
-      <div class="info-i"><span>Formato</span><b>Melhor volta</b><small>Menor tempo vence</small></div>
-      <div class="info-i rec"><span>Melhor volta da pista</span><b id="rec-tempo"></b><small id="rec-info"></small></div>
-    </div>
-    <nav class="tabs">
-      <a href="#ranking">Classificação</a>
-      <a href="#inscricao" class="cta">Inscreva-se</a>
-    </nav>
+<div class="stage" id="stage">
+  <div class="car"><img src="gt3rs.jpg" alt="" onerror="this.parentNode.style.display='none'"></div>
+
+  <div class="content">
+    <div class="kicker">K9 Campeonato</div>
+    <h1>Classificação</h1>
+    <div class="meta">Assetto Corsa<i>/</i>Interlagos<i>/</i>Porsche 911 GT3 RS</div>
+    <div class="rule"></div>
+
+    <div class="head"><span>Pos</span><span>Piloto</span><span class="t">Tempo</span></div>
+    <div id="rows"><div class="msg">Carregando classificação…</div></div>
   </div>
-</header>
 
-<main class="wrap">
-  <section id="ranking">
-    <div class="sec-h">
-      <h2>Classificação<small id="count">Carregando pilotos…</small></h2>
-      <div class="tools">
-        <span id="status" class="status"><b></b><span>conectando…</span></span>
-      </div>
-    </div>
-
-    <div id="podium" class="podium"></div>
-
-    <div class="searchbar">
-      <input id="q" class="search" type="search" placeholder="Buscar piloto ou código…" autocomplete="off">
-    </div>
-
-    <div class="board">
-      <table>
-        <thead><tr>
-          <th>Pos</th><th class="c">Cód</th><th>Piloto</th><th class="r">Tempo</th><th class="r g">Diferença</th>
-        </tr></thead>
-        <tbody id="rows"><tr><td colspan="5" class="empty">Carregando…</td></tr></tbody>
-      </table>
-    </div>
-    <p id="more" class="more"></p>
-  </section>
-
-  <section id="inscricao">
-    <div class="sec-h"><h2>Inscrição<small>Preencha o formulário para entrar no campeonato.</small></h2></div>
-    <div class="form-box">
-      <form id="cad" novalidate>
-        <div class="grid">
-          <div class="fld full"><label for="f-nome">Nome completo <em>*</em></label>
-            <input id="f-nome" name="nome" type="text" autocomplete="name" maxlength="80">
-            <span class="err">Informe seu nome completo.</span></div>
-          <div class="fld"><label for="f-cpf">CPF <em>*</em></label>
-            <input id="f-cpf" name="cpf" type="text" inputmode="numeric" placeholder="000.000.000-00" maxlength="14">
-            <span class="err">CPF inválido.</span></div>
-          <div class="fld"><label for="f-wpp">WhatsApp <em>*</em></label>
-            <input id="f-wpp" name="wpp" type="tel" inputmode="numeric" placeholder="(13) 99999-9999" maxlength="15">
-            <span class="err">Informe um WhatsApp com DDD.</span></div>
-          <div class="fld full"><label for="f-email">E-mail <em>*</em></label>
-            <input id="f-email" name="email" type="email" autocomplete="email" placeholder="seu@email.com">
-            <span class="err">Informe um e-mail válido.</span></div>
-          <fieldset class="fld"><legend>Já competiu? <em>*</em></legend>
-            <div class="opts">
-              <label><input type="radio" name="competiu" value="Sim"><span>Sim</span></label>
-              <label><input type="radio" name="competiu" value="Não"><span>Não</span></label>
-            </div><span class="err">Escolha uma opção.</span></fieldset>
-          <fieldset class="fld"><legend>Quer participar de outros campeonatos? <em>*</em></legend>
-            <div class="opts">
-              <label><input type="radio" name="outros" value="Sim"><span>Sim</span></label>
-              <label><input type="radio" name="outros" value="Não"><span>Não</span></label>
-            </div><span class="err">Escolha uma opção.</span></fieldset>
-        </div>
-        <button class="btn" type="submit">Confirmar inscrição</button>
-        <p class="note">Seus dados (CPF, WhatsApp e e-mail) são usados só pela organização e não aparecem no ranking.</p>
-      </form>
-      <div id="done" class="done" hidden>
-        <div class="flag"></div>
-        <h3>Inscrição enviada!</h3>
-        <p>Agora é acelerar. Seu tempo aparece na classificação assim que for registrado.</p>
-        <button type="button" id="again">Fazer outra inscrição</button>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer><div class="wrap">K9 Campeonato · Assetto Corsa · Interlagos · Porsche 911 GT3 RS. Classificação gerada a partir da planilha oficial.</div></footer>
-<div class="checker"></div>
+  <div class="foot" id="foot"></div>
+</div>
 
 <script>
 /* ========================= CONFIGURAÇÃO ========================= */
-// Link CSV da aba RANKING: Arquivo → Compartilhar → Publicar na Web
-// → escolha "RANKING" e "Valores separados por vírgula (.csv)" → Publicar → copie o link.
-const CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSpmePeuXEvjsDGJIwRZljAUhs8EyC03CZw8nJcBYSrj_L-4JcEw2iCS1TX0TM-fZiclvLVzjMf-kgo/pub?gid=497839822&single=true&output=csv";
-// Formulário: ID do Google Forms (a parte entre /e/ e /viewform no link)
-const FORM_ID = "1FAIpQLScnLPWYWUG7wDEnts95c_mP25ph6qqAOJX1HUeaLNgwtZw4Ew";
-// Código de cada pergunta (entry.XXXXXXX) — veja como pegar no passo a passo.
-// O texto enviado nas perguntas Sim/Não precisa ser IGUAL ao das opções do Forms.
-const ENTRY = {
-  cpf:      "entry.362328070",
-  nome:     "entry.530832851",
-  wpp:      "entry.411931172",
-  competiu: "entry.1642324945",
-  outros:   "entry.692842771",
-  email:    "emailAddress"      // e-mail coletado pelas configurações do Forms
-};
-// Melhor volta da pista (recorde de referência, mesmo carro). Edite aqui quando mudar.
-const RECORDE = {
-  piloto: "Ricardo Maurício",
-  tempo:  "1:36.967",
-  carro:  "Porsche 911 GT3 RS",
-  data:   ""            // ex.: "15/08/2026" (deixe vazio para não mostrar)
-};
-// Quantos pilotos aparecem na tabela (os outros só pela busca)
-const TOP_N = 10;
-// Atualizar a tabela a cada X segundos
+// Mesmo link CSV da aba RANKING usado na página inicial
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSpmePeuXEvjsDGJIwRZljAUhs8EyC03CZw8nJcBYSrj_L-4JcEw2iCS1TX0TM-fZiclvLVzjMf-kgo/pub?gid=497839822&single=true&output=csv";
+// Quantos pilotos aparecem na tela (20 cabe com folga em 1920)
+const TOP_N = 20;
+// Atualizar a cada X segundos
 const REFRESH_SECONDS = 60;
 /* ================================================================ */
-
-// Dados de exemplo — usados só enquanto CSV_URL estiver vazio
-const DEMO = [
-  ["5867","Leonardo Martins","01:33:793"],["2833","Lucas Ponciano Leutz Toledo","01:33:923"],
-  ["3882","Lucas Ribeiro","01:34:515"],["5813","Nicollas Camilo Reis Ribeiro","01:34:604"],
-  ["0870","Marcos Vinicius Freitas de Souza","01:34:815"],["5862","Lucas Limoli","01:34:914"],
-  ["1813","Gustavo Ramos Guimarães","01:35:015"],["","Augusto Serrat Pinheiro","01:35:123"]
-];
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
-// Parser de CSV (lida com aspas e vírgulas dentro de campos)
+// Encaixa o palco de 1080x1920 na janela (no OBS com 1080x1920 fica em tamanho real)
+function fit(){
+  const k = Math.min(innerWidth/1080, innerHeight/1920);
+  const st = $("#stage");
+  st.style.transform = `scale(${k})`;
+  st.style.left = ((innerWidth - 1080*k)/2) + "px";
+  st.style.top  = ((innerHeight - 1920*k)/2) + "px";
+}
+addEventListener("resize", fit); fit();
+
 function parseCSV(text){
   const out=[]; let row=[], f="", q=false;
   for(let i=0;i<text.length;i++){
@@ -303,167 +103,52 @@ function parseCSV(text){
   if(f!==""||row.length){ row.push(f); out.push(row); }
   return out;
 }
-
-// "01:33:793" ou "1:33.793" → milissegundos
 function toMs(t){
   const p = String(t).trim().split(/[:.,]/).map(Number);
   if(p.length<3 || p.some(isNaN)) return NaN;
   const [m,s,ms]=p.slice(-3);
   return (m*60+s)*1000+ms;
 }
-// milissegundos → "1:33.793"
 function fmt(ms){
   const m=Math.floor(ms/60000), s=Math.floor(ms%60000/1000), r=ms%1000;
   return `${m}:${String(s).padStart(2,"0")}.${String(r).padStart(3,"0")}`;
 }
-
-// Lê a aba RANKING: colunas C=COD, D=NOME, E=TEMPO (índices 2,3,4)
 function fromSheet(rows){
-  let start = rows.findIndex(r => r.some(c => /^\s*NOME\s*$/i.test(c)));
+  const start = rows.findIndex(r => r.some(c => /^\s*NOME\s*$/i.test(c)));
   const h = rows[start] || [];
-  const iN = h.findIndex(c=>/^\s*NOME\s*$/i.test(c)),
-        iC = h.findIndex(c=>/^\s*COD/i.test(c)),
-        iT = h.findIndex(c=>/^\s*TEMPO/i.test(c));
-  const N = iN<0?3:iN, C = iC<0?2:iC, T = iT<0?4:iT;
+  const iN = h.findIndex(c=>/^\s*NOME\s*$/i.test(c)), iT = h.findIndex(c=>/^\s*TEMPO/i.test(c));
+  const N = iN<0?3:iN, T = iT<0?4:iT;
   return rows.slice(start+1)
-    .map(r => ({cod:(r[C]||"").trim(), nome:(r[N]||"").trim(), raw:(r[T]||"").trim()}))
-    .filter(d => d.nome && d.raw);
+    .map(r => ({nome:(r[N]||"").trim(), ms:toMs(r[T]||"")}))
+    .filter(d => d.nome && !isNaN(d.ms))
+    .sort((a,b)=>a.ms-b.ms);
 }
 
-let data=[];
-function prepare(list){
-  return list.map(d => ({...d, ms: toMs(d.raw)}))
-    .filter(d => !isNaN(d.ms))
-    .sort((a,b) => a.ms-b.ms)
-    .map((d,i,arr) => ({...d, pos:i+1, gap: i? d.ms-arr[0].ms : 0}));
+function render(data){
+  $("#rows").innerHTML = data.length ? data.slice(0,TOP_N).map((d,i)=>`
+    <div class="row${i<3?" top":""}">
+      <span class="p">${i+1}</span>
+      <span class="n">${esc(d.nome)}</span>
+      <span class="t">${fmt(d.ms)}</span>
+    </div>`).join("") : `<div class="msg">Nenhum tempo registrado ainda.</div>`;
 }
 
-function hl(text,q){
-  const t=esc(text); if(!q) return t;
-  const i=text.toLowerCase().indexOf(q); if(i<0) return t;
-  return esc(text.slice(0,i))+"<mark>"+esc(text.slice(i,i+q.length))+"</mark>"+esc(text.slice(i+q.length));
-}
-
-function render(){
-  const q=$("#q").value.trim().toLowerCase();
-  $("#count").textContent = `${data.length} piloto${data.length===1?"":"s"} classificado${data.length===1?"":"s"}`;
-
-  // pódio (ordem visual 2-1-3)
-  const top=data.slice(0,3);
-  $("#podium").innerHTML = [1,0,2].filter(i=>top[i]).map(i=>{
-    const d=top[i];
-    return `<div class="pod p${i+1}"><div class="pos">${i+1}</div>
-      <div class="nm">${esc(d.nome)}</div><div class="tm">${fmt(d.ms)}</div>
-      <div class="gp">${i?"+"+(d.gap/1000).toFixed(3)+"s":"melhor volta"}</div><div class="base"></div></div>`;
-  }).join("");
-
-  const list = q ? data.filter(d => d.nome.toLowerCase().includes(q) || d.cod.includes(q)) : data.slice(0, TOP_N);
-  $("#rows").innerHTML = list.length ? list.map(d=>`
-    <tr class="${d.pos<=3?"t"+d.pos:""}">
-      <td class="p">${d.pos}</td>
-      <td class="c">${hl(d.cod||"—",q)}</td>
-      <td class="n">${hl(d.nome,q)}</td>
-      <td class="t">${fmt(d.ms)}</td>
-      <td class="g">${d.pos===1?"—":"+"+(d.gap/1000).toFixed(3)}</td>
-    </tr>`).join("") : `<tr><td colspan="5" class="empty">Nenhum piloto encontrado.</td></tr>`;
-
-  $("#more").textContent = !q && data.length > TOP_N
-    ? `Mostrando os ${TOP_N} primeiros de ${data.length} pilotos. Use a busca para encontrar seu nome.`
-    : q ? `${list.length} resultado${list.length===1?"":"s"} para "${$("#q").value.trim()}"` : "";
-}
-
-function setStatus(cls,msg){ const s=$("#status"); s.className="status "+cls; s.lastElementChild.textContent=msg; }
-
+let last = null;
 async function load(){
-  if(!CSV_URL){
-    data=prepare(DEMO.map(([cod,nome,raw])=>({cod,nome,raw})));
-    setStatus("demo","dados de exemplo — configure CSV_URL"); render(); return;
-  }
   try{
-    let res;
-    try{ res = await fetch(CSV_URL, {cache:"no-store"}); }
-    catch(e){ throw new Error(location.protocol==="file:" ? "abra pelo site do GitHub, não pelo arquivo" : "sem acesso à planilha (rede bloqueada)"); }
-    if(!res.ok) throw new Error("planilha respondeu "+res.status+" — confira se a aba RANKING está publicada");
+    const res = await fetch(CSV_URL, {cache:"no-store"});
+    if(!res.ok) throw new Error(res.status);
     const txt = await res.text();
-    if(/^\s*<!DOCTYPE|<html/i.test(txt)) throw new Error("a planilha pediu login — publique a aba RANKING");
-    data = prepare(fromSheet(parseCSV(txt)));
-    if(!data.length) throw new Error("planilha carregou, mas nenhum tempo foi encontrado");
-    setStatus("", "atualizado às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}));
-    render();
+    if(/<html/i.test(txt)) throw new Error("login");
+    render(fromSheet(parseCSV(txt)));
+    last = new Date();
+    $("#foot").textContent = "Atualizado às " + last.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
   }catch(e){
-    setStatus("err","erro: "+e.message); console.error(e);
-    if(!data.length) $("#rows").innerHTML=`<tr><td colspan="5" class="empty">Não foi possível carregar a classificação.</td></tr>`;
+    // mantém a última lista na tela; só avisa no rodapé
+    $("#foot").textContent = last ? "Sem conexão. Última atualização às " + last.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}) : "Não foi possível carregar a planilha";
+    if(!last) $("#rows").innerHTML = `<div class="msg">Aguardando a planilha…</div>`;
   }
 }
-
-/* ---------------- formulário de inscrição ---------------- */
-const digits = s => s.replace(/\D/g,"");
-function cpfOk(c){
-  c=digits(c); if(c.length!==11 || /^(\d)\1+$/.test(c)) return false;
-  for(let t=9;t<11;t++){
-    let s=0; for(let i=0;i<t;i++) s+=+c[i]*(t+1-i);
-    if(((s*10)%11)%10 !== +c[t]) return false;
-  }
-  return true;
-}
-// máscaras
-$("#f-cpf").addEventListener("input",e=>{
-  const d=digits(e.target.value).slice(0,11);
-  e.target.value=d.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");
-});
-$("#f-wpp").addEventListener("input",e=>{
-  const d=digits(e.target.value).slice(0,11);
-  e.target.value=d.length>10?d.replace(/(\d{2})(\d{5})(\d{0,4})/,"($1) $2-$3")
-    :d.length>2?d.replace(/(\d{2})(\d{0,4})(\d{0,4})/,(m,a,b,c)=>`(${a}) ${b}${c?"-"+c:""}`):d;
-});
-
-$("#cad").addEventListener("input",e=>e.target.closest(".fld")?.classList.remove("bad"));
-
-$("#cad").addEventListener("submit", async e=>{
-  e.preventDefault();
-  const f=e.target, v={
-    nome: f.nome.value.trim().replace(/\s+/g," "),
-    cpf: digits(f.cpf.value),
-    wpp: digits(f.wpp.value),
-    email: f.email.value.trim(),
-    competiu: f.competiu.value,
-    outros: f.outros.value
-  };
-  const checks={
-    "f-nome": v.nome.split(" ").length>=2,
-    "f-cpf": cpfOk(v.cpf),
-    "f-wpp": v.wpp.length>=10,
-    "f-email": /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)
-  };
-  let ok=true;
-  for(const [id,pass] of Object.entries(checks)){ $("#"+id).closest(".fld").classList.toggle("bad",!pass); ok=ok&&pass; }
-  for(const n of ["competiu","outros"]){ const fs=f.querySelector(`[name=${n}]`).closest(".fld"); fs.classList.toggle("bad",!v[n]); ok=ok&&!!v[n]; }
-  if(!ok){ f.querySelector(".bad input")?.focus(); return; }
-
-  if(Object.values(ENTRY).some(x=>/^entry\.0+\d$/.test(x))){
-    alert("Formulário ainda não configurado: os códigos das perguntas (ENTRY) no index.html precisam ser preenchidos. Nada foi enviado.");
-    return;
-  }
-
-  const body=new URLSearchParams();
-  for(const k of Object.keys(ENTRY)) if(v[k]) body.append(ENTRY[k], v[k]);
-
-  const btn=f.querySelector(".btn"); btn.disabled=true; btn.textContent="Enviando…";
-  try{
-    // O Google não devolve resposta legível para outros sites (no-cors),
-    // então o envio é considerado ok se não houver erro de rede.
-    await fetch(`https://docs.google.com/forms/d/e/${FORM_ID}/formResponse`,{method:"POST",mode:"no-cors",body});
-    f.hidden=true; $("#done").hidden=false; f.reset();
-  }catch(err){
-    alert("Não foi possível enviar. Verifique sua conexão e tente de novo.");
-  }finally{ btn.disabled=false; btn.textContent="Confirmar inscrição"; }
-});
-$("#again").addEventListener("click",()=>{ $("#done").hidden=true; $("#cad").hidden=false; });
-
-$("#rec-tempo").textContent = RECORDE.tempo;
-$("#rec-info").textContent = [RECORDE.piloto, RECORDE.carro, RECORDE.data].filter(Boolean).join(" · ");
-
-$("#q").addEventListener("input", render);
 load();
 setInterval(load, REFRESH_SECONDS*1000);
 </script>
