@@ -145,6 +145,9 @@ fieldset.fld{border:0}
 @media (max-width:720px){.grid{grid-template-columns:1fr}.form-box{padding:20px}}
 
 footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:13px}
+.fmenu{display:flex;flex-wrap:wrap;gap:6px 22px;margin-bottom:12px}
+.fmenu a{color:var(--muted);text-decoration:none;font-size:13px;transition:color .15s}
+.fmenu a:hover{color:var(--txt)}
 
 @media (max-width:720px){
   .podium{grid-template-columns:1fr;gap:10px}
@@ -245,7 +248,10 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
   </section>
 </main>
 
-<footer><div class="wrap">K9 Campeonato · Assetto Corsa · Interlagos · Porsche 911 GT3 RS. Classificação gerada a partir da planilha oficial.</div></footer>
+<footer><div class="wrap">
+  <nav class="fmenu"><a href="./">Início</a><a href="#ranking">Classificação</a><a href="#inscricao">Inscrição</a><a href="TV/">Ranking TV</a><a href="podio/">Pódio</a></nav>
+  <p>K9 Campeonato · Assetto Corsa · Interlagos · Porsche 911 GT3 RS. Classificação gerada a partir da planilha oficial.</p>
+</div></footer>
 <div class="checker"></div>
 
 <script>
